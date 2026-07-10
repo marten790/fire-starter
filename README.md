@@ -4,7 +4,14 @@ A kiln firing dashboard for manual pottery kilns — built for iPad, designed fr
 
 ## Status
 
-**MVP started** — design tokens from Figma are in the app; home + active firing screens exist.
+**Live on iPad-ready hosting:** https://fire-starter-ten.vercel.app
+
+## Use on iPad (Safari)
+
+1. Open https://fire-starter-ten.vercel.app in **Safari**
+2. Tap **Share** → **Add to Home Screen** → **Add**
+3. Open **Fire Starter** from your home screen
+4. Join garage Wi‑Fi when firing — Delores itself does not need Wi‑Fi
 
 ## Run locally
 
