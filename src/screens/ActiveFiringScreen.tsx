@@ -163,21 +163,31 @@ export function ActiveFiringScreen({
               Save & leave
             </Button>
           </div>
-          <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
-            End firing
-          </Button>
-          <Button className="fs-btn--block" variant="danger" onClick={() => setConfirmDeleteOpen(true)}>
-            Delete firing
-          </Button>
+          <div className="active-actions">
+            <Button className="fs-btn--grow" variant="ghost" onClick={onEnd}>
+              End firing
+            </Button>
+            <Button
+              className="fs-btn--grow"
+              variant="danger"
+              onClick={() => setConfirmDeleteOpen(true)}
+            >
+              Delete firing
+            </Button>
+          </div>
         </section>
       )}
 
       {!isRunning && (
-        <div className="active-actions active-actions--solo active-actions--stack">
-          <Button className="fs-btn--block" variant="primary" onClick={onBackToDashboard}>
+        <div className="active-actions active-actions--solo">
+          <Button className="fs-btn--grow" variant="primary" onClick={onBackToDashboard}>
             Back to dashboard
           </Button>
-          <Button className="fs-btn--block" variant="danger" onClick={() => setConfirmDeleteOpen(true)}>
+          <Button
+            className="fs-btn--grow"
+            variant="danger"
+            onClick={() => setConfirmDeleteOpen(true)}
+          >
             Delete firing
           </Button>
         </div>

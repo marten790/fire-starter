@@ -42,6 +42,14 @@
 
 .confirm-dialog__actions {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
   gap: var(--space-3);
   margin-top: var(--space-2);
+}
+
+.confirm-dialog__actions .fs-btn {
+  flex: 1 1 0;
+  min-width: 0;
 }

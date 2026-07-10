@@ -123,23 +123,12 @@
 
 .active-actions {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: var(--space-3);
-  margin-top: var(--space-1);
-}
-
-.active-form .fs-btn--ghost {
   margin-top: var(--space-1);
 }
 
 .active-actions--solo {
   margin-bottom: var(--space-4);
-}
-
-.active-actions--stack {
-  flex-direction: column;
-}
-
-.fs-btn--grow {
-  flex: 1;
-  min-width: 0;
 }

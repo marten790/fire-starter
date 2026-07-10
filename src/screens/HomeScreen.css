@@ -140,6 +140,8 @@
 
 .current-panel__actions {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: var(--space-3);
 }
 

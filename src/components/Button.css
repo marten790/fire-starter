@@ -62,3 +62,8 @@
 .fs-btn--block {
   width: 100%;
 }
+
+.fs-btn--grow {
+  flex: 1;
+  min-width: 0;
+}
