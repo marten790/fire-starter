@@ -127,6 +127,10 @@
   margin-top: var(--space-1);
 }
 
+.active-form .fs-btn--ghost {
+  margin-top: var(--space-1);
+}
+
 .active-actions--solo {
   margin-bottom: var(--space-4);
 }

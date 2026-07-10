@@ -81,7 +81,7 @@ export function ActiveFiringScreen({
       <header className="active-header">
         <div className="active-nav">
           <button type="button" className="active-back" onClick={onBackToDashboard}>
-            ← Dashboard
+            ← Back to dashboard
           </button>
           {!isRunning && <span className="active-status">Completed</span>}
         </div>
@@ -141,10 +141,13 @@ export function ActiveFiringScreen({
             <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
               Log reading
             </Button>
-            <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
-              End firing
+            <Button className="fs-btn--grow" variant="outline" onClick={onBackToDashboard}>
+              Save & leave
             </Button>
           </div>
+          <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
+            End firing
+          </Button>
         </section>
       )}
 

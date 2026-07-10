@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Button } from '../components/Button'
 import { formatElapsed, peakTemp } from '../lib/firings'
 import type { FiringSession } from '../types/firing'
@@ -15,8 +16,24 @@ function typeLabel(type: FiringSession['type']) {
   return type === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
 }
 
-function elapsedFor(firing: FiringSession) {
-  const end = firing.endedAt ?? Date.now()
+function useLiveElapsed(startedAt?: number, active = false) {
+  const [elapsed, setElapsed] = useState(() =>
+    startedAt ? Math.floor((Date.now() - startedAt) / 1000) : 0,
+  )
+
+  useEffect(() => {
+    if (!active || !startedAt) return
+    const tick = () => setElapsed(Math.floor((Date.now() - startedAt) / 1000))
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, [startedAt, active])
+
+  return elapsed
+}
+
+function elapsedForCompleted(firing: FiringSession) {
+  const end = firing.endedAt ?? firing.startedAt
   return Math.floor((end - firing.startedAt) / 1000)
 }
 
@@ -27,6 +44,9 @@ export function HomeScreen({
   onStartGlaze,
   onOpenFiring,
 }: Props) {
+  const liveElapsed = useLiveElapsed(running?.startedAt, Boolean(running))
+  const last = running?.entries.at(-1)
+
   return (
     <main className="app-shell home">
       <header className="app-header">
@@ -34,39 +54,66 @@ export function HomeScreen({
         <p className="app-kiln">Kiln · Delores</p>
         <h1 className="home-title">Dashboard</h1>
         <p className="home-lead">
-          Current firing, history of past runs, and start a new fire.
+          Jump into the current firing anytime to log readings, then come back here.
         </p>
       </header>
 
-      {running && (
-        <section className="dash-section" aria-label="Current firing">
-          <h2>Currently running</h2>
-          <button
-            type="button"
-            className="firing-card firing-card--live"
-            onClick={() => onOpenFiring(running.id)}
-          >
-            <div className="firing-card__top">
-              <span className="firing-card__badge">Live</span>
+      <section className="dash-section current-firing" aria-label="Current firing">
+        <h2>Current firing</h2>
+
+        {running ? (
+          <div className="current-panel">
+            <div className="current-panel__status">
+              <span className="firing-card__badge">In progress</span>
               <span>{typeLabel(running.type)}</span>
             </div>
-            <strong className="firing-card__name">{running.name}</strong>
-            <div className="firing-card__meta">
-              <span>{formatElapsed(elapsedFor(running))}</span>
+            <strong className="current-panel__name">{running.name}</strong>
+            <p className="current-panel__timer" aria-live="polite">
+              {formatElapsed(liveElapsed)}
+            </p>
+            <div className="current-panel__meta">
               <span>
-                {peakTemp(running) != null ? `${peakTemp(running)}°C peak` : 'No readings yet'}
+                Last:{' '}
+                {last ? (
+                  <strong>
+                    {last.tempC}°C · dial {last.dial}
+                  </strong>
+                ) : (
+                  'no readings yet'
+                )}
               </span>
-              <span>{running.entries.length} logs</span>
+              <span>
+                Peak:{' '}
+                {peakTemp(running) != null ? `${peakTemp(running)}°C` : '—'}
+              </span>
+              <span>{running.entries.length} log{running.entries.length === 1 ? '' : 's'}</span>
             </div>
-            <span className="firing-card__cta">Continue firing →</span>
-          </button>
-        </section>
-      )}
+            <p className="current-panel__hint">
+              Leave and return as often as you need — the timer keeps running.
+            </p>
+            <Button
+              className="fs-btn--block"
+              variant="aux"
+              onClick={() => onOpenFiring(running.id)}
+            >
+              Enter reading / open firing
+            </Button>
+          </div>
+        ) : (
+          <div className="current-panel current-panel--empty">
+            <p className="home-hint">No firing in progress.</p>
+            <p className="home-hint">Start a bisque or glaze below when you&apos;re ready.</p>
+          </div>
+        )}
+      </section>
 
       <section className="dash-section" aria-label="Start firing">
-        <h2>{running ? 'New firing' : 'Ready to fire?'}</h2>
+        <h2>Start a firing</h2>
         {running ? (
-          <p className="home-hint">End the current firing before starting another.</p>
+          <p className="home-hint">
+            A firing is already running. Open it above to log info, or end it from inside the
+            firing screen before starting another.
+          </p>
         ) : (
           <div className="app-actions">
             <Button className="fs-btn--block" variant="primary" onClick={onStartBisque}>
@@ -98,12 +145,13 @@ export function HomeScreen({
                   </div>
                   <strong className="firing-card__name">{firing.name}</strong>
                   <div className="firing-card__meta">
-                    <span>{formatElapsed(elapsedFor(firing))}</span>
+                    <span>{formatElapsed(elapsedForCompleted(firing))}</span>
                     <span>
                       {peakTemp(firing) != null ? `${peakTemp(firing)}°C peak` : 'No readings'}
                     </span>
                     <span>{firing.entries.length} logs</span>
                   </div>
+                  <span className="firing-card__cta">View details →</span>
                 </button>
               </li>
             ))}
