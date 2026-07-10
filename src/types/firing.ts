@@ -58,6 +58,11 @@ export type PreStartChecklistItem = {
   checked: boolean
 }
 
+export type CandlingState = {
+  doorClosed?: PhaseReading
+  peepholeClosed?: PhaseReading
+}
+
 export type FiringSession = {
   id: string
   type: FiringType
@@ -80,5 +85,7 @@ export type FiringSession = {
   results?: FiringResults
   /** Snapshot of the pre-start checklist at start */
   preStartChecklist?: PreStartChecklistItem[]
+  /** Bisque candling milestones (door / peephole) */
+  candling?: CandlingState
   source?: 'paper-import' | 'app'
 }

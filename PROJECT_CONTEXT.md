@@ -179,7 +179,7 @@ Your current sheets are the best blueprint for the app. Digital MVP should mirro
 - [x] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
 - [x] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
 - [x] Reminder every 15 / 30 / 60 min while firing is active (in-app + browser Notification when allowed)
-- [ ] Candling helpers: door ajar / close at 100°C prompts
+- [x] Candling helpers: door ajar / close at 100°C prompts (bisque section + check reminders)
 - [x] Cone event log during fire (started / down + time + temp)
 - [ ] Glaze soak controls (start soak when cone 6 starts; 30 min timer)
 - [x] Switch off + cooling log (1 / 2 / 4 / 8 h)

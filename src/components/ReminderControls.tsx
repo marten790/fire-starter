@@ -10,11 +10,18 @@ import './ReminderControls.css'
 type Props = {
   settings: ReminderSettings
   onChange: (next: ReminderSettings) => void
+  title?: string
+  hint?: string
 }
 
 const INTERVALS: ReminderInterval[] = [15, 30, 60]
 
-export function ReminderControls({ settings, onChange }: Props) {
+export function ReminderControls({
+  settings,
+  onChange,
+  title = 'Check reminders',
+  hint = 'Nudge you to peek at the kiln while a firing is running. Keep Fire Starter open (or on the Home Screen) for the most reliable alerts.',
+}: Props) {
   const [now, setNow] = useState(Date.now())
   const [permNote, setPermNote] = useState<string | null>(null)
 
@@ -53,12 +60,9 @@ export function ReminderControls({ settings, onChange }: Props) {
   }
 
   return (
-    <section className="reminder-controls" aria-label="Check reminders">
-      <h3>Check reminders</h3>
-      <p className="reminder-controls__hint">
-        Nudge you to peek at the kiln while a firing is running. Keep Fire Starter open (or on the
-        Home Screen) for the most reliable alerts.
-      </p>
+    <section className="reminder-controls" aria-label={title}>
+      <h3>{title}</h3>
+      <p className="reminder-controls__hint">{hint}</p>
 
       <Toggle
         label="Reminders on"

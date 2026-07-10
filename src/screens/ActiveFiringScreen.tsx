@@ -3,6 +3,7 @@ import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EndOfFireForm } from '../components/EndOfFireForm'
 import { FiringDetails } from '../components/FiringDetails'
+import { BisqueSection } from '../components/BisqueSection'
 import { ReminderControls } from '../components/ReminderControls'
 import { TempChart } from '../components/TempChart'
 import { Toggle } from '../components/Toggle'
@@ -258,7 +259,17 @@ export function ActiveFiringScreen({
             </div>
           </div>
 
-          <ReminderControls settings={reminders} onChange={onRemindersChange} />
+          {firing.type === 'bisque' ? (
+            <BisqueSection
+              firing={firing}
+              reminders={reminders}
+              onRemindersChange={onRemindersChange}
+              onChange={onChange}
+              lastTempC={lastTemp}
+            />
+          ) : (
+            <ReminderControls settings={reminders} onChange={onRemindersChange} />
+          )}
 
           <div className="active-actions">
             <Button className="fs-btn--grow" variant="ghost" onClick={onEnd}>

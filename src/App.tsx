@@ -134,9 +134,13 @@ export default function App() {
     if (getRunningFiring(firings)) return
     const next = createFiring(type, { preStartChecklist: checklist })
     setFirings((prev) => [next, ...prev])
-    setReminders((prev) =>
-      prev.enabled ? scheduleNextReminder(prev, next.id) : { ...prev, firingId: next.id },
-    )
+    setReminders((prev) => {
+      const withInterval =
+        type === 'bisque' ? { ...prev, intervalMinutes: 15 as const } : prev
+      return withInterval.enabled
+        ? scheduleNextReminder(withInterval, next.id)
+        : { ...withInterval, firingId: next.id }
+    })
     alertedForDueAt.current = null
     setScreen({ name: 'active', firingId: next.id })
   }

@@ -1,0 +1,81 @@
+.bisque-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}
+
+.bisque-section h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-body-size);
+  font-weight: 600;
+}
+
+.bisque-section__hint {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: 1.45;
+  color: var(--text-mid);
+}
+
+.bisque-section__status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--color-primary) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, white);
+  border-radius: var(--radius-md);
+  font-size: var(--text-body-size);
+  color: var(--text-high);
+}
+
+.bisque-section__status p {
+  margin: 0;
+}
+
+.bisque-section__muted {
+  color: var(--text-mid);
+  font-size: var(--text-caption-size);
+}
+
+.bisque-section__toggles {
+  display: flex;
+  flex-direction: column;
+}
+
+.bisque-section__alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bisque-section__alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, white);
+}
+
+.bisque-section__alert strong {
+  font-family: var(--font-heading);
+  font-size: var(--text-subtitle-size);
+  color: var(--text-full);
+}
+
+.bisque-section__alert p {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--text-mid);
+}
+
+.bisque-section .reminder-controls {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}

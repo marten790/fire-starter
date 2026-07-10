@@ -19,7 +19,9 @@ export function FiringDetails({ firing }: Props) {
     !hasCooling &&
     !hasResults &&
     !firing.weatherNote &&
-    !firing.preStartChecklist?.length
+    !firing.preStartChecklist?.length &&
+    !firing.candling?.doorClosed &&
+    !firing.candling?.peepholeClosed
   ) {
     return null
   }
@@ -43,6 +45,36 @@ export function FiringDetails({ firing }: Props) {
                 {item.checked ? '✓' : '○'} {item.label}
               </li>
             ))}
+          </ul>
+        </div>
+      )}
+
+      {(firing.candling?.doorClosed || firing.candling?.peepholeClosed) && (
+        <div className="firing-details__block">
+          <h2>Candling</h2>
+          <ul>
+            {firing.candling.doorClosed && (
+              <li>
+                Door closed
+                {firing.candling.doorClosed.clockTime
+                  ? ` · ${firing.candling.doorClosed.clockTime}`
+                  : ''}
+                {firing.candling.doorClosed.tempC != null
+                  ? ` · ${firing.candling.doorClosed.tempC}°C`
+                  : ''}
+              </li>
+            )}
+            {firing.candling.peepholeClosed && (
+              <li>
+                Peephole closed
+                {firing.candling.peepholeClosed.clockTime
+                  ? ` · ${firing.candling.peepholeClosed.clockTime}`
+                  : ''}
+                {firing.candling.peepholeClosed.tempC != null
+                  ? ` · ${firing.candling.peepholeClosed.tempC}°C`
+                  : ''}
+              </li>
+            )}
           </ul>
         </div>
       )}
