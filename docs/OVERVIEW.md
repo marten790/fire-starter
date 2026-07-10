@@ -12,15 +12,18 @@ Firing a manual kiln means juggling a dial, a temperature meter, pyrometric cone
 - Store temperature readings, cone results, and notes
 - Review past firings to improve consistency
 
-## Your setup (as described)
+## Your setup (confirmed)
 
-| Item | Role |
-|------|------|
-| Manual kiln with side dial | You control heat; no digital controller program |
-| Temperature meter | External readout you check during the fire |
-| Firing cones | Witness heatwork (time + temperature); bent cone = maturity |
-| Bisque firing | First fire — clay becomes ceramic, stays porous for glaze |
-| Glaze firing | Second fire — glazes melt and mature |
+| Item | Detail |
+|------|--------|
+| Kiln | **Delores** — front-loading electric, chamber 48×53×68 cm, dial **1–6** |
+| Location | Garage (no Wi‑Fi at kiln → offline-first app) |
+| Temperature | External thermocouple meter, **°C** |
+| Cones | Orton — bisque **06**, glaze **6/7**; packs on bottom / mid / top |
+| Bisque | ~7–8 hrs, peak ~893°C, candle + door ajar first hour, no soak |
+| Glaze | ~9–10 hrs, peak ~1072°C, **30 min soak** when cone 6 starts bending |
+| Device | iPad Pro 11" (3rd gen) |
+| Today | Paper heating + cooling log sheets (app should mirror these) |
 
 ## Design approach
 
