@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
+import { TempChart } from '../components/TempChart'
 import type { FiringType, HeatingLogEntry } from '../types/firing'
 import './ActiveFiringScreen.css'
 
@@ -48,6 +49,7 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
     const entry: HeatingLogEntry = {
       id: crypto.randomUUID(),
       elapsedMinutes: Math.floor(elapsedSec / 60),
+      elapsedSeconds: elapsedSec,
       clockTime: nowClock(),
       dial,
       tempC: Number(tempC),
@@ -137,6 +139,8 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
           </ul>
         </section>
       )}
+
+      {entries.length > 0 && <TempChart entries={entries} />}
 
       <div className="active-footer">
         <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
