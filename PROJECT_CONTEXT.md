@@ -19,7 +19,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | Discovery & requirements | **Complete** | All open questions answered |
 | Design (Figma → tokens) | **Done (v1)** | Tokens in `src/styles/tokens.css` + `docs/DESIGN_TOKENS.md` |
 | Tech setup | **Deployed** | https://fire-starter-ten.vercel.app |
-| MVP build | **In progress** | Dashboard + active log + graph + local history |
+| MVP build | **In progress** | Dashboard + active log + graph + history + reminders |
 | iPad testing | **Ready** | Safari → Add to Home Screen |
 
 **Last updated:** 2026-07-10
@@ -175,19 +175,19 @@ Your current sheets are the best blueprint for the app. Digital MVP should mirro
 ## Feature backlog (prioritized)
 
 ### MVP — replace the paper log on iPad
-- [ ] Home: Start **Bisque** or **Glaze** (kiln: Delores)
+- [x] Home: Start **Bisque** or **Glaze** (kiln: Delores)
 - [ ] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
-- [ ] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
-- [ ] Reminder every 30–60 min while firing is active
+- [x] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
+- [x] Reminder every 15 / 30 / 60 min while firing is active (in-app + browser Notification when allowed)
 - [ ] Candling helpers: door ajar / close at 100°C prompts
-- [ ] Cone event log during fire (started / down + time + temp)
+- [x] Cone event log during fire (started / down + time + temp)
 - [ ] Glaze soak controls (start soak when cone 6 starts; 30 min timer)
-- [ ] Switch off + cooling log (1 / 2 / 4 / 8 h)
-- [ ] Results: bottom/mid/top cones, outcomes, defects, adjustments, photos, rating
-- [ ] History list (filter type, search date)
-- [ ] Simple **temp vs time graph** for one firing
+- [x] Switch off + cooling log (1 / 2 / 4 / 8 h)
+- [x] Results: bottom/mid/top cones, outcomes, defects, adjustments, rating (photos later)
+- [x] History list (filter type, search date)
+- [x] Simple **temp vs time graph** for one firing
 - [ ] Element firing counter (~7 so far; alert threshold later)
-- [ ] Offline-capable storage (garage)
+- [x] Offline-capable storage (garage — localStorage)
 
 ### Next
 - [ ] Compare two firings (overlay graphs)

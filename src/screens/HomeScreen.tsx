@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { formatElapsed, peakTemp } from '../lib/firings'
+import { formatReminderCountdown } from '../lib/reminders'
 import type { FiringSession, FiringType } from '../types/firing'
 import './HomeScreen.css'
 
 type Props = {
   running?: FiringSession
   history: FiringSession[]
+  reminderNextDueAt?: number | null
   onStartBisque: () => void
   onStartGlaze: () => void
   onOpenFiring: (id: string) => void
@@ -52,6 +54,7 @@ function elapsedForCompleted(firing: FiringSession) {
 export function HomeScreen({
   running,
   history,
+  reminderNextDueAt = null,
   onStartBisque,
   onStartGlaze,
   onOpenFiring,
@@ -62,6 +65,13 @@ export function HomeScreen({
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [dateFilter, setDateFilter] = useState('')
   const [pendingDelete, setPendingDelete] = useState<FiringSession | null>(null)
+  const [now, setNow] = useState(Date.now())
+
+  useEffect(() => {
+    if (reminderNextDueAt == null) return
+    const id = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(id)
+  }, [reminderNextDueAt])
 
   const filteredHistory = useMemo(() => {
     return history.filter((firing) => {
@@ -140,9 +150,16 @@ export function HomeScreen({
               <span>
                 {running.entries.length} log{running.entries.length === 1 ? '' : 's'}
               </span>
+              {reminderNextDueAt != null && (
+                <span>
+                  Next check:{' '}
+                  <strong>{formatReminderCountdown(reminderNextDueAt, now)}</strong>
+                </span>
+              )}
             </div>
             <p className="current-panel__hint">
-              Leave and return as often as you need — the timer keeps running.
+              Leave and return as often as you need — the timer keeps running. Reminders nudge you
+              while Fire Starter is open.
             </p>
             <div className="current-panel__actions">
               <Button

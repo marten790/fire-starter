@@ -1,0 +1,23 @@
+.reminder-alert__eyebrow {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.reminder-alert__panel h2 {
+  margin: 0;
+}
+
+.reminder-alert__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.reminder-alert__actions .fs-btn {
+  width: 100%;
+}

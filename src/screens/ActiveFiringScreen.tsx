@@ -3,14 +3,19 @@ import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EndOfFireForm } from '../components/EndOfFireForm'
 import { FiringDetails } from '../components/FiringDetails'
+import { ReminderControls } from '../components/ReminderControls'
 import { TempChart } from '../components/TempChart'
 import { Toggle } from '../components/Toggle'
 import { formatElapsed, DEFAULT_COOLING_LOG, nowClock } from '../lib/firings'
+import type { ReminderSettings } from '../lib/reminders'
 import type { ConeEvent, FiringSession, FiringType, HeatingLogEntry } from '../types/firing'
 import './ActiveFiringScreen.css'
 
 type Props = {
   firing: FiringSession
+  reminders: ReminderSettings
+  onRemindersChange: (next: ReminderSettings) => void
+  onLoggedReading: () => void
   onChange: (firing: FiringSession) => void
   onEnd: () => void
   onDelete: () => void
@@ -46,6 +51,9 @@ function coneTogglesFor(type: FiringType): ConeToggleDef[] {
 
 export function ActiveFiringScreen({
   firing,
+  reminders,
+  onRemindersChange,
+  onLoggedReading,
   onChange,
   onEnd,
   onDelete,
@@ -105,6 +113,7 @@ export function ActiveFiringScreen({
       dial,
       entries: [...firing.entries, entry],
     })
+    onLoggedReading()
     setTempC('')
     setNotes('')
   }
@@ -248,6 +257,8 @@ export function ActiveFiringScreen({
               })}
             </div>
           </div>
+
+          <ReminderControls settings={reminders} onChange={onRemindersChange} />
 
           <div className="active-actions">
             <Button className="fs-btn--grow" variant="ghost" onClick={onEnd}>
