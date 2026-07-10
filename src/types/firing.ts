@@ -37,12 +37,17 @@ export type CoolingLogEntry = {
 }
 
 export type FiringResults = {
+  coneBottom?: string
+  coneMid?: string
+  coneTop?: string
+  /** Combined string used by imported paper logs */
   coneBottomMidTop?: string
   clayOutcome?: string
   glazeOutcome?: string
   defects?: string
   adjustments?: string
   notes?: string
+  rating?: number
 }
 
 export type FiringSession = {

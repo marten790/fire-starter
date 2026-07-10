@@ -96,6 +96,14 @@ export function FiringDetails({ firing }: Props) {
             {firing.results.coneBottomMidTop && (
               <li>Witness cones (bottom/mid/top): {firing.results.coneBottomMidTop}</li>
             )}
+            {(firing.results.coneBottom ||
+              firing.results.coneMid ||
+              firing.results.coneTop) && (
+              <li>
+                Witness cones — bottom: {firing.results.coneBottom || '—'} · mid:{' '}
+                {firing.results.coneMid || '—'} · top: {firing.results.coneTop || '—'}
+              </li>
+            )}
             {firing.results.clayOutcome && <li>Clay body: {firing.results.clayOutcome}</li>}
             {firing.results.glazeOutcome && <li>Glaze: {firing.results.glazeOutcome}</li>}
             {firing.results.defects && <li>Defects: {firing.results.defects}</li>}

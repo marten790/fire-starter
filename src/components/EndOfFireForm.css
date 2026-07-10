@@ -1,0 +1,120 @@
+.end-fire {
+  margin-top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.end-fire__block {
+  padding: var(--space-4);
+  background: var(--surface-background);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.end-fire__hint {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--text-mid);
+}
+
+.end-fire__phase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.end-fire__phase-actions .fs-btn {
+  flex: 1 1 140px;
+  min-height: 44px;
+  font-size: var(--text-body-size);
+  padding: var(--space-2) var(--space-3);
+}
+
+.end-fire__phase h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-subtitle-size);
+  margin-bottom: var(--space-2);
+}
+
+.end-fire__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.end-fire__row--cones {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.end-fire__time-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.end-fire__time-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.end-fire__now {
+  flex-shrink: 0;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.end-fire__cooling {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.end-fire__cooling > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.end-fire__cooling > li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.end-fire textarea {
+  min-height: 88px;
+  padding: var(--space-3);
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-background);
+  color: var(--text-full);
+  font: inherit;
+  resize: vertical;
+}
+
+.end-fire textarea:focus {
+  outline: 2px solid var(--color-primary-300);
+  border-color: var(--color-primary);
+}
+
+@media (max-width: 520px) {
+  .end-fire__row,
+  .end-fire__row--cones {
+    grid-template-columns: 1fr;
+  }
+}

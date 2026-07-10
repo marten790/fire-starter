@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  completeFiring,
   createFiring,
   getCompletedFirings,
   getRunningFiring,
@@ -42,13 +43,8 @@ export default function App() {
 
   function endFiring(firingId: string) {
     setFirings((prev) =>
-      prev.map((f) =>
-        f.id === firingId
-          ? { ...f, status: 'completed', endedAt: Date.now() }
-          : f,
-      ),
+      prev.map((f) => (f.id === firingId ? completeFiring(f) : f)),
     )
-    setScreen({ name: 'home' })
   }
 
   function deleteFiring(firingId: string) {

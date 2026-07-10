@@ -1,8 +1,20 @@
-import type { FiringSession, FiringType } from '../types/firing'
+import type {
+  CoolingLogEntry,
+  FiringSession,
+  FiringType,
+  PhaseReading,
+} from '../types/firing'
 import { PAPER_FIRINGS } from '../data/paperFirings'
 
 const STORAGE_KEY = 'fire-starter.firings.v1'
 const DELETED_PAPER_KEY = 'fire-starter.deleted-paper.v1'
+
+export const DEFAULT_COOLING_LOG: CoolingLogEntry[] = [
+  { label: '1 hr after off' },
+  { label: '2 hrs' },
+  { label: '4 hrs' },
+  { label: '8 hrs' },
+]
 
 function dateName(type: FiringType, when = new Date()) {
   const date = when.toLocaleDateString(undefined, {
@@ -12,6 +24,10 @@ function dateName(type: FiringType, when = new Date()) {
   })
   const label = type === 'bisque' ? 'Bisque' : 'Glaze'
   return `${date} · ${label}`
+}
+
+export function nowClock() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
 function loadDeletedPaperIds(): Set<string> {
@@ -78,6 +94,34 @@ export function createFiring(type: FiringType): FiringSession {
   }
 }
 
+export function peakTemp(firing: FiringSession) {
+  if (firing.entries.length === 0) return null
+  return Math.max(...firing.entries.map((e) => e.tempC))
+}
+
+export function completeFiring(firing: FiringSession): FiringSession {
+  const last = firing.entries.at(-1)
+  const peak = peakTemp(firing) ?? undefined
+  const switchOff: PhaseReading = firing.switchOff ?? {
+    clockTime: nowClock(),
+    dial: firing.dial,
+    tempC: last?.tempC,
+  }
+
+  return {
+    ...firing,
+    status: 'completed',
+    endedAt: firing.endedAt ?? Date.now(),
+    topTempC: firing.topTempC ?? peak,
+    switchOff,
+    coolingLog:
+      firing.coolingLog && firing.coolingLog.length > 0
+        ? firing.coolingLog
+        : DEFAULT_COOLING_LOG.map((row) => ({ ...row })),
+    results: firing.results ?? {},
+  }
+}
+
 export function getRunningFiring(firings: FiringSession[]) {
   return firings.find((f) => f.status === 'running')
 }
@@ -93,11 +137,6 @@ export function formatElapsed(totalSeconds: number) {
   const m = Math.floor((totalSeconds % 3600) / 60)
   const s = totalSeconds % 60
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-}
-
-export function peakTemp(firing: FiringSession) {
-  if (firing.entries.length === 0) return null
-  return Math.max(...firing.entries.map((e) => e.tempC))
 }
 
 export function paperLogCount() {
