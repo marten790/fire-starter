@@ -50,12 +50,18 @@ export default function App() {
     setScreen({ name: 'home' })
   }
 
+  function deleteFiring(firingId: string) {
+    setFirings((prev) => prev.filter((f) => f.id !== firingId))
+    setScreen({ name: 'home' })
+  }
+
   if (screen.name === 'active' && activeFiring) {
     return (
       <ActiveFiringScreen
         firing={activeFiring}
         onChange={updateFiring}
         onEnd={() => endFiring(activeFiring.id)}
+        onDelete={() => deleteFiring(activeFiring.id)}
         onBackToDashboard={() => setScreen({ name: 'home' })}
       />
     )
@@ -68,6 +74,7 @@ export default function App() {
       onStartBisque={() => startFiring('bisque')}
       onStartGlaze={() => startFiring('glaze')}
       onOpenFiring={(id) => setScreen({ name: 'active', firingId: id })}
+      onDeleteFiring={deleteFiring}
     />
   )
 }

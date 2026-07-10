@@ -9,6 +9,7 @@ type Props = {
   firing: FiringSession
   onChange: (firing: FiringSession) => void
   onEnd: () => void
+  onDelete: () => void
   onBackToDashboard: () => void
 }
 
@@ -20,6 +21,7 @@ export function ActiveFiringScreen({
   firing,
   onChange,
   onEnd,
+  onDelete,
   onBackToDashboard,
 }: Props) {
   const isRunning = firing.status === 'running'
@@ -74,6 +76,11 @@ export function ActiveFiringScreen({
   function updateDial(next: number) {
     setDial(next)
     onChange({ ...firing, dial: next })
+  }
+
+  function handleDelete() {
+    if (!window.confirm(`Delete “${firing.name}”? This cannot be undone.`)) return
+    onDelete()
   }
 
   return (
@@ -148,13 +155,19 @@ export function ActiveFiringScreen({
           <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
             End firing
           </Button>
+          <Button className="fs-btn--block" variant="danger" onClick={handleDelete}>
+            Delete firing
+          </Button>
         </section>
       )}
 
       {!isRunning && (
-        <div className="active-actions active-actions--solo">
+        <div className="active-actions active-actions--solo active-actions--stack">
           <Button className="fs-btn--block" variant="primary" onClick={onBackToDashboard}>
             Back to dashboard
+          </Button>
+          <Button className="fs-btn--block" variant="danger" onClick={handleDelete}>
+            Delete firing
           </Button>
         </div>
       )}

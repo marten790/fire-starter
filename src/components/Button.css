@@ -49,6 +49,16 @@
   background: var(--color-aux-700);
 }
 
+.fs-btn--danger {
+  background: transparent;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.fs-btn--danger:hover:not(:disabled) {
+  background: var(--color-danger-100);
+}
+
 .fs-btn--block {
   width: 100%;
 }

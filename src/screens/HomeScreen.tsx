@@ -10,6 +10,7 @@ type Props = {
   onStartBisque: () => void
   onStartGlaze: () => void
   onOpenFiring: (id: string) => void
+  onDeleteFiring: (id: string) => void
 }
 
 function typeLabel(type: FiringSession['type']) {
@@ -37,15 +38,27 @@ function elapsedForCompleted(firing: FiringSession) {
   return Math.floor((end - firing.startedAt) / 1000)
 }
 
+function confirmDelete(name: string) {
+  return window.confirm(
+    `Delete “${name}”? This cannot be undone.`,
+  )
+}
+
 export function HomeScreen({
   running,
   history,
   onStartBisque,
   onStartGlaze,
   onOpenFiring,
+  onDeleteFiring,
 }: Props) {
   const liveElapsed = useLiveElapsed(running?.startedAt, Boolean(running))
   const last = running?.entries.at(-1)
+
+  function handleDelete(firing: FiringSession) {
+    if (!confirmDelete(firing.name)) return
+    onDeleteFiring(firing.id)
+  }
 
   return (
     <main className="app-shell home">
@@ -91,13 +104,22 @@ export function HomeScreen({
             <p className="current-panel__hint">
               Leave and return as often as you need — the timer keeps running.
             </p>
-            <Button
-              className="fs-btn--block"
-              variant="aux"
-              onClick={() => onOpenFiring(running.id)}
-            >
-              Enter reading / open firing
-            </Button>
+            <div className="current-panel__actions">
+              <Button
+                className="fs-btn--grow"
+                variant="aux"
+                onClick={() => onOpenFiring(running.id)}
+              >
+                Enter reading / open firing
+              </Button>
+              <Button
+                className="fs-btn--grow"
+                variant="danger"
+                onClick={() => handleDelete(running)}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="current-panel current-panel--empty">
@@ -133,7 +155,7 @@ export function HomeScreen({
         ) : (
           <ul className="history-list">
             {history.map((firing) => (
-              <li key={firing.id}>
+              <li key={firing.id} className="history-item">
                 <button
                   type="button"
                   className="firing-card"
@@ -153,6 +175,13 @@ export function HomeScreen({
                   </div>
                   <span className="firing-card__cta">View details →</span>
                 </button>
+                <Button
+                  className="history-item__delete"
+                  variant="danger"
+                  onClick={() => handleDelete(firing)}
+                >
+                  Delete
+                </Button>
               </li>
             ))}
           </ul>

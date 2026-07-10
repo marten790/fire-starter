@@ -135,6 +135,10 @@
   margin-bottom: var(--space-4);
 }
 
+.active-actions--stack {
+  flex-direction: column;
+}
+
 .fs-btn--grow {
   flex: 1;
   min-width: 0;

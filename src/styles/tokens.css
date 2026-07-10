@@ -46,6 +46,11 @@
   --color-aux-100: #ffe7dd;
   --color-aux: var(--color-aux-400);
 
+  /* Danger */
+  --color-danger-600: #e11d48;
+  --color-danger-100: #ffe4e8;
+  --color-danger: var(--color-danger-600);
+
   /* Surfaces */
   --surface-background: #ffffff;
   --surface-main: #f9f9f9;
