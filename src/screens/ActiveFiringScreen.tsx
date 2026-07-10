@@ -4,8 +4,9 @@ import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EndOfFireForm } from '../components/EndOfFireForm'
 import { FiringDetails } from '../components/FiringDetails'
 import { TempChart } from '../components/TempChart'
+import { Toggle } from '../components/Toggle'
 import { formatElapsed, DEFAULT_COOLING_LOG, nowClock } from '../lib/firings'
-import type { ConeEvent, FiringSession, HeatingLogEntry } from '../types/firing'
+import type { ConeEvent, FiringSession, FiringType, HeatingLogEntry } from '../types/firing'
 import './ActiveFiringScreen.css'
 
 type Props = {
@@ -14,6 +15,33 @@ type Props = {
   onEnd: () => void
   onDelete: () => void
   onBackToDashboard: () => void
+}
+
+type ConeToggleDef = {
+  key: string
+  label: string
+  hint?: string
+}
+
+function coneTogglesFor(type: FiringType): ConeToggleDef[] {
+  if (type === 'bisque') {
+    return [
+      { key: '07-started', label: 'Cone 07 started' },
+      { key: '07-down', label: 'Cone 07 down' },
+      { key: '06-started', label: 'Cone 06 started' },
+      { key: '06-down', label: 'Cone 06 down', hint: 'Target — shut off when bent' },
+    ]
+  }
+  return [
+    { key: '4-started', label: 'Cone 4 started' },
+    { key: '4-down', label: 'Cone 4 down' },
+    { key: '5-started', label: 'Cone 5 started' },
+    { key: '5-down', label: 'Cone 5 down' },
+    { key: '6-started', label: 'Cone 6 started', hint: 'Begin soak' },
+    { key: '6-down', label: 'Cone 6 down' },
+    { key: '7-started', label: 'Cone 7 started' },
+    { key: '7-down', label: 'Cone 7 down', hint: 'Guard cone' },
+  ]
 }
 
 export function ActiveFiringScreen({
@@ -31,7 +59,6 @@ export function ActiveFiringScreen({
   const [tempC, setTempC] = useState('')
   const [kWh, setKWh] = useState('')
   const [notes, setNotes] = useState('')
-  const [coneNote, setConeNote] = useState('')
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   useEffect(() => {
@@ -54,6 +81,7 @@ export function ActiveFiringScreen({
 
   const lastTemp = firing.entries.at(-1)?.tempC
   const label = firing.type === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
+  const coneToggles = useMemo(() => coneTogglesFor(firing.type), [firing.type])
 
   const canLog = useMemo(() => {
     const t = Number(tempC)
@@ -86,19 +114,30 @@ export function ActiveFiringScreen({
     onChange({ ...firing, dial: next })
   }
 
-  function addConeEvent(preset?: string) {
-    const note = (preset ?? coneNote).trim()
-    if (!note) return
-    const event: ConeEvent = {
-      clockTime: nowClock(),
-      tempC: lastTemp ?? (Number(tempC) || 0),
-      note,
+  function isConeOn(key: string) {
+    return (firing.coneEvents ?? []).some((event) => event.key === key)
+  }
+
+  function toggleCone(def: ConeToggleDef, on: boolean) {
+    const existing = firing.coneEvents ?? []
+    if (on) {
+      if (existing.some((event) => event.key === def.key)) return
+      const event: ConeEvent = {
+        key: def.key,
+        clockTime: nowClock(),
+        tempC: lastTemp ?? (Number(tempC) || 0),
+        note: def.label,
+      }
+      onChange({
+        ...firing,
+        coneEvents: [...existing, event],
+      })
+      return
     }
     onChange({
       ...firing,
-      coneEvents: [...(firing.coneEvents ?? []), event],
+      coneEvents: existing.filter((event) => event.key !== def.key),
     })
-    setConeNote('')
   }
 
   return (
@@ -184,30 +223,29 @@ export function ActiveFiringScreen({
             </Button>
           </div>
 
-          <div className="cone-quick">
+          <div className="cone-toggles">
             <h3>Cone events</h3>
-            <div className="cone-quick__presets">
-              <button type="button" onClick={() => addConeEvent('Cone started to fall')}>
-                Started
-              </button>
-              <button type="button" onClick={() => addConeEvent('Cone down')}>
-                Down
-              </button>
-              {firing.type === 'glaze' && (
-                <button type="button" onClick={() => addConeEvent('Cone 6 started — begin soak')}>
-                  Cone 6 → soak
-                </button>
-              )}
-            </div>
-            <div className="cone-quick__custom">
-              <input
-                placeholder="Custom cone note"
-                value={coneNote}
-                onChange={(e) => setConeNote(e.target.value)}
-              />
-              <Button variant="outline" disabled={!coneNote.trim()} onClick={() => addConeEvent()}>
-                Add
-              </Button>
+            <p className="cone-toggles__hint">
+              Flip on when it happens — time and last temp are saved. Flip off to undo.
+            </p>
+            <div className="cone-toggles__list">
+              {coneToggles.map((def) => {
+                const on = isConeOn(def.key)
+                const event = (firing.coneEvents ?? []).find((e) => e.key === def.key)
+                return (
+                  <Toggle
+                    key={def.key}
+                    label={def.label}
+                    hint={
+                      on && event
+                        ? `${event.clockTime ?? ''} · ${event.tempC}°C`
+                        : def.hint
+                    }
+                    checked={on}
+                    onChange={(e) => toggleCone(def, e.target.checked)}
+                  />
+                )
+              })}
             </div>
           </div>
 
@@ -246,22 +284,6 @@ export function ActiveFiringScreen({
             </Button>
           </div>
         </>
-      )}
-
-      {(firing.coneEvents?.length ?? 0) > 0 && isRunning && (
-        <section className="active-log" aria-label="Cone events">
-          <h2>Cone events</h2>
-          <ul>
-            {[...(firing.coneEvents ?? [])].reverse().map((event, i) => (
-              <li key={`${event.note}-${i}`}>
-                <span>
-                  {event.clockTime} · {event.tempC}°C
-                </span>
-                <strong>{event.note}</strong>
-              </li>
-            ))}
-          </ul>
-        </section>
       )}
 
       {firing.entries.length > 0 && (
