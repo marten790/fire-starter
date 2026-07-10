@@ -88,6 +88,13 @@
   font-style: normal;
 }
 
-.active-footer {
-  margin-top: var(--space-6);
+.active-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.fs-btn--grow {
+  flex: 1;
+  min-width: 0;
 }

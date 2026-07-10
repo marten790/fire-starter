@@ -114,9 +114,14 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
           />
         </label>
 
-        <Button className="fs-btn--block" variant="aux" disabled={!canLog} onClick={logReading}>
-          Log reading
-        </Button>
+        <div className="active-actions">
+          <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
+            Log reading
+          </Button>
+          <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
+            End firing
+          </Button>
+        </div>
       </section>
 
       {entries.length > 0 && (
@@ -141,12 +146,6 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
       )}
 
       {entries.length > 0 && <TempChart entries={entries} />}
-
-      <div className="active-footer">
-        <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
-          End firing (draft)
-        </Button>
-      </div>
     </main>
   )
 }
