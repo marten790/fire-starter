@@ -19,7 +19,7 @@ import {
   snoozeReminder,
   type ReminderSettings,
 } from './lib/reminders'
-import type { FiringSession, FiringType } from './types/firing'
+import type { FiringSession, FiringType, PreStartChecklistItem } from './types/firing'
 import { HomeScreen } from './screens/HomeScreen'
 import { ActiveFiringScreen } from './screens/ActiveFiringScreen'
 import './App.css'
@@ -130,9 +130,9 @@ export default function App() {
     setReminderOpen(false)
   }
 
-  function startFiring(type: FiringType) {
+  function startFiring(type: FiringType, checklist: PreStartChecklistItem[]) {
     if (getRunningFiring(firings)) return
-    const next = createFiring(type)
+    const next = createFiring(type, { preStartChecklist: checklist })
     setFirings((prev) => [next, ...prev])
     setReminders((prev) =>
       prev.enabled ? scheduleNextReminder(prev, next.id) : { ...prev, firingId: next.id },
@@ -193,8 +193,7 @@ export default function App() {
           reminderNextDueAt={
             reminders.enabled && running ? reminders.nextDueAt : null
           }
-          onStartBisque={() => startFiring('bisque')}
-          onStartGlaze={() => startFiring('glaze')}
+          onStartFiring={startFiring}
           onOpenFiring={(id) => setScreen({ name: 'active', firingId: id })}
           onDeleteFiring={deleteFiring}
         />

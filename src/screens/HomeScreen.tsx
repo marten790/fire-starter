@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
+import { PreStartChecklist } from '../components/PreStartChecklist'
 import { formatElapsed, peakTemp } from '../lib/firings'
 import { formatReminderCountdown } from '../lib/reminders'
-import type { FiringSession, FiringType } from '../types/firing'
+import type { FiringSession, FiringType, PreStartChecklistItem } from '../types/firing'
 import './HomeScreen.css'
 
 type Props = {
   running?: FiringSession
   history: FiringSession[]
   reminderNextDueAt?: number | null
-  onStartBisque: () => void
-  onStartGlaze: () => void
+  onStartFiring: (type: FiringType, checklist: PreStartChecklistItem[]) => void
   onOpenFiring: (id: string) => void
   onDeleteFiring: (id: string) => void
 }
@@ -55,8 +55,7 @@ export function HomeScreen({
   running,
   history,
   reminderNextDueAt = null,
-  onStartBisque,
-  onStartGlaze,
+  onStartFiring,
   onOpenFiring,
   onDeleteFiring,
 }: Props) {
@@ -65,6 +64,7 @@ export function HomeScreen({
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [dateFilter, setDateFilter] = useState('')
   const [pendingDelete, setPendingDelete] = useState<FiringSession | null>(null)
+  const [checklistType, setChecklistType] = useState<FiringType | null>(null)
   const [now, setNow] = useState(Date.now())
 
   useEffect(() => {
@@ -108,6 +108,18 @@ export function HomeScreen({
         cancelLabel="Keep it"
         onConfirm={confirmPendingDelete}
         onCancel={() => setPendingDelete(null)}
+      />
+
+      <PreStartChecklist
+        open={checklistType != null}
+        type={checklistType}
+        onCancel={() => setChecklistType(null)}
+        onConfirm={(items) => {
+          if (!checklistType) return
+          const type = checklistType
+          setChecklistType(null)
+          onStartFiring(type, items)
+        }}
       />
 
       <header className="app-header">
@@ -195,10 +207,18 @@ export function HomeScreen({
           </p>
         ) : (
           <div className="app-actions">
-            <Button className="fs-btn--block" variant="primary" onClick={onStartBisque}>
+            <Button
+              className="fs-btn--block"
+              variant="primary"
+              onClick={() => setChecklistType('bisque')}
+            >
               Start bisque · Cone 06
             </Button>
-            <Button className="fs-btn--block" variant="outline" onClick={onStartGlaze}>
+            <Button
+              className="fs-btn--block"
+              variant="outline"
+              onClick={() => setChecklistType('glaze')}
+            >
               Start glaze · Cone 6 / 7
             </Button>
           </div>

@@ -52,6 +52,12 @@ export type FiringResults = {
   rating?: number
 }
 
+export type PreStartChecklistItem = {
+  key: string
+  label: string
+  checked: boolean
+}
+
 export type FiringSession = {
   id: string
   type: FiringType
@@ -72,5 +78,7 @@ export type FiringSession = {
   coneEvents?: ConeEvent[]
   coolingLog?: CoolingLogEntry[]
   results?: FiringResults
+  /** Snapshot of the pre-start checklist at start */
+  preStartChecklist?: PreStartChecklistItem[]
   source?: 'paper-import' | 'app'
 }

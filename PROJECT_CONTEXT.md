@@ -19,7 +19,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | Discovery & requirements | **Complete** | All open questions answered |
 | Design (Figma → tokens) | **Done (v1)** | Tokens in `src/styles/tokens.css` + `docs/DESIGN_TOKENS.md` |
 | Tech setup | **Deployed** | https://fire-starter-ten.vercel.app |
-| MVP build | **In progress** | Dashboard + active log + graph + history + reminders |
+| MVP build | **In progress** | Dashboard + log + graph + history + reminders + pre-start checklist |
 | iPad testing | **Ready** | Safari → Add to Home Screen |
 
 **Last updated:** 2026-07-10
@@ -176,7 +176,7 @@ Your current sheets are the best blueprint for the app. Digital MVP should mirro
 
 ### MVP — replace the paper log on iPad
 - [x] Home: Start **Bisque** or **Glaze** (kiln: Delores)
-- [ ] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
+- [x] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
 - [x] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
 - [x] Reminder every 15 / 30 / 60 min while firing is active (in-app + browser Notification when allowed)
 - [ ] Candling helpers: door ajar / close at 100°C prompts

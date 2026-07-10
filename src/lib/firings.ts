@@ -3,6 +3,7 @@ import type {
   FiringSession,
   FiringType,
   PhaseReading,
+  PreStartChecklistItem,
 } from '../types/firing'
 import { PAPER_FIRINGS } from '../data/paperFirings'
 
@@ -78,7 +79,10 @@ export function rememberDeletedFiring(firingId: string) {
   saveDeletedPaperIds(deleted)
 }
 
-export function createFiring(type: FiringType): FiringSession {
+export function createFiring(
+  type: FiringType,
+  options?: { preStartChecklist?: PreStartChecklistItem[] },
+): FiringSession {
   const startedAt = Date.now()
   return {
     id: crypto.randomUUID(),
@@ -90,6 +94,7 @@ export function createFiring(type: FiringType): FiringSession {
     dial: 1,
     loadedBy: 'LEA',
     coneTarget: type === 'bisque' ? 'Cone 06' : 'Cone 6/7',
+    preStartChecklist: options?.preStartChecklist,
     source: 'app',
   }
 }

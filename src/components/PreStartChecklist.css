@@ -1,0 +1,51 @@
+.prestart-panel {
+  width: min(100%, 480px);
+  max-height: min(92vh, 720px);
+  overflow: auto;
+}
+
+.prestart-eyebrow {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.prestart-lead {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--text-subtitle-size);
+  line-height: var(--text-subtitle-line);
+}
+
+.prestart-progress {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  color: var(--text-high);
+}
+
+.prestart-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.prestart-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.prestart-actions .fs-btn {
+  flex: 1 1 0;
+  min-width: 0;
+}

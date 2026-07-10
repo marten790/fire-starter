@@ -13,7 +13,14 @@ export function FiringDetails({ firing }: Props) {
     firing.results &&
     Object.values(firing.results).some((v) => v != null && String(v).trim() !== '')
 
-  if (!hasPhases && !hasCones && !hasCooling && !hasResults && !firing.weatherNote) {
+  if (
+    !hasPhases &&
+    !hasCones &&
+    !hasCooling &&
+    !hasResults &&
+    !firing.weatherNote &&
+    !firing.preStartChecklist?.length
+  ) {
     return null
   }
 
@@ -24,6 +31,19 @@ export function FiringDetails({ firing }: Props) {
           {firing.loadedBy && <p>Loaded by: {firing.loadedBy}</p>}
           {firing.coneTarget && <p>Cone target: {firing.coneTarget}</p>}
           {firing.weatherNote && <p>Note: {firing.weatherNote}</p>}
+        </div>
+      )}
+
+      {firing.preStartChecklist && firing.preStartChecklist.length > 0 && (
+        <div className="firing-details__block">
+          <h2>Pre-start checklist</h2>
+          <ul>
+            {firing.preStartChecklist.map((item) => (
+              <li key={item.key}>
+                {item.checked ? '✓' : '○'} {item.label}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
