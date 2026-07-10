@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { FiringDetails } from '../components/FiringDetails'
 import { TempChart } from '../components/TempChart'
 import { formatElapsed } from '../lib/firings'
@@ -33,6 +34,7 @@ export function ActiveFiringScreen({
   const [tempC, setTempC] = useState('')
   const [kWh, setKWh] = useState('')
   const [notes, setNotes] = useState('')
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   useEffect(() => {
     if (!isRunning) {
@@ -79,13 +81,21 @@ export function ActiveFiringScreen({
     onChange({ ...firing, dial: next })
   }
 
-  function handleDelete() {
-    if (!window.confirm(`Delete “${firing.name}”? This cannot be undone.`)) return
-    onDelete()
-  }
-
   return (
     <main className="app-shell active">
+      <ConfirmDialog
+        open={confirmDeleteOpen}
+        title="Delete firing?"
+        message={`Delete “${firing.name}”? This removes the log, graph, and notes permanently.`}
+        confirmLabel="Delete"
+        cancelLabel="Keep it"
+        onConfirm={() => {
+          setConfirmDeleteOpen(false)
+          onDelete()
+        }}
+        onCancel={() => setConfirmDeleteOpen(false)}
+      />
+
       <header className="active-header">
         <div className="active-nav">
           <button type="button" className="active-back" onClick={onBackToDashboard}>
@@ -156,7 +166,7 @@ export function ActiveFiringScreen({
           <Button className="fs-btn--block" variant="ghost" onClick={onEnd}>
             End firing
           </Button>
-          <Button className="fs-btn--block" variant="danger" onClick={handleDelete}>
+          <Button className="fs-btn--block" variant="danger" onClick={() => setConfirmDeleteOpen(true)}>
             Delete firing
           </Button>
         </section>
@@ -167,7 +177,7 @@ export function ActiveFiringScreen({
           <Button className="fs-btn--block" variant="primary" onClick={onBackToDashboard}>
             Back to dashboard
           </Button>
-          <Button className="fs-btn--block" variant="danger" onClick={handleDelete}>
+          <Button className="fs-btn--block" variant="danger" onClick={() => setConfirmDeleteOpen(true)}>
             Delete firing
           </Button>
         </div>

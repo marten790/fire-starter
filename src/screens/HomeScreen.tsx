@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { formatElapsed, peakTemp } from '../lib/firings'
 import type { FiringSession, FiringType } from '../types/firing'
 import './HomeScreen.css'
@@ -48,10 +49,6 @@ function elapsedForCompleted(firing: FiringSession) {
   return Math.floor((end - firing.startedAt) / 1000)
 }
 
-function confirmDelete(name: string) {
-  return window.confirm(`Delete “${name}”? This cannot be undone.`)
-}
-
 export function HomeScreen({
   running,
   history,
@@ -64,6 +61,7 @@ export function HomeScreen({
   const last = running?.entries.at(-1)
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [dateFilter, setDateFilter] = useState('')
+  const [pendingDelete, setPendingDelete] = useState<FiringSession | null>(null)
 
   const filteredHistory = useMemo(() => {
     return history.filter((firing) => {
@@ -75,18 +73,33 @@ export function HomeScreen({
 
   const filtersActive = typeFilter !== 'all' || dateFilter !== ''
 
-  function handleDelete(firing: FiringSession) {
-    if (!confirmDelete(firing.name)) return
-    onDeleteFiring(firing.id)
-  }
-
   function clearFilters() {
     setTypeFilter('all')
     setDateFilter('')
   }
 
+  function confirmPendingDelete() {
+    if (!pendingDelete) return
+    onDeleteFiring(pendingDelete.id)
+    setPendingDelete(null)
+  }
+
   return (
     <main className="app-shell home">
+      <ConfirmDialog
+        open={pendingDelete != null}
+        title="Delete firing?"
+        message={
+          pendingDelete
+            ? `Delete “${pendingDelete.name}”? This removes the log, graph, and notes permanently.`
+            : ''
+        }
+        confirmLabel="Delete"
+        cancelLabel="Keep it"
+        onConfirm={confirmPendingDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
+
       <header className="app-header">
         <p className="app-brand">Fire Starter</p>
         <p className="app-kiln">Kiln · Delores</p>
@@ -142,7 +155,7 @@ export function HomeScreen({
               <Button
                 className="fs-btn--grow"
                 variant="danger"
-                onClick={() => handleDelete(running)}
+                onClick={() => setPendingDelete(running)}
               >
                 Delete
               </Button>
@@ -228,7 +241,7 @@ export function HomeScreen({
                   <button
                     type="button"
                     className="history-card__delete"
-                    onClick={() => handleDelete(firing)}
+                    onClick={() => setPendingDelete(firing)}
                     aria-label={`Delete ${firing.name}`}
                   >
                     Delete
