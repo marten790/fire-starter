@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
 import { formatElapsed, peakTemp } from '../lib/firings'
-import type { FiringSession } from '../types/firing'
+import type { FiringSession, FiringType } from '../types/firing'
 import './HomeScreen.css'
 
 type Props = {
@@ -13,8 +13,18 @@ type Props = {
   onDeleteFiring: (id: string) => void
 }
 
+type TypeFilter = 'all' | FiringType
+
 function typeLabel(type: FiringSession['type']) {
   return type === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
+}
+
+function toLocalDateKey(timestamp: number) {
+  const d = new Date(timestamp)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function useLiveElapsed(startedAt?: number, active = false) {
@@ -39,9 +49,7 @@ function elapsedForCompleted(firing: FiringSession) {
 }
 
 function confirmDelete(name: string) {
-  return window.confirm(
-    `Delete “${name}”? This cannot be undone.`,
-  )
+  return window.confirm(`Delete “${name}”? This cannot be undone.`)
 }
 
 export function HomeScreen({
@@ -54,10 +62,27 @@ export function HomeScreen({
 }: Props) {
   const liveElapsed = useLiveElapsed(running?.startedAt, Boolean(running))
   const last = running?.entries.at(-1)
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
+  const [dateFilter, setDateFilter] = useState('')
+
+  const filteredHistory = useMemo(() => {
+    return history.filter((firing) => {
+      if (typeFilter !== 'all' && firing.type !== typeFilter) return false
+      if (dateFilter && toLocalDateKey(firing.startedAt) !== dateFilter) return false
+      return true
+    })
+  }, [history, typeFilter, dateFilter])
+
+  const filtersActive = typeFilter !== 'all' || dateFilter !== ''
 
   function handleDelete(firing: FiringSession) {
     if (!confirmDelete(firing.name)) return
     onDeleteFiring(firing.id)
+  }
+
+  function clearFilters() {
+    setTypeFilter('all')
+    setDateFilter('')
   }
 
   return (
@@ -99,7 +124,9 @@ export function HomeScreen({
                 Peak:{' '}
                 {peakTemp(running) != null ? `${peakTemp(running)}°C` : '—'}
               </span>
-              <span>{running.entries.length} log{running.entries.length === 1 ? '' : 's'}</span>
+              <span>
+                {running.entries.length} log{running.entries.length === 1 ? '' : 's'}
+              </span>
             </div>
             <p className="current-panel__hint">
               Leave and return as often as you need — the timer keeps running.
@@ -150,11 +177,48 @@ export function HomeScreen({
 
       <section className="dash-section" aria-label="Firing history">
         <h2>History</h2>
+
+        {history.length > 0 && (
+          <div className="history-filters">
+            <label className="history-filters__field">
+              <span>Type</span>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as TypeFilter)}
+              >
+                <option value="all">All types</option>
+                <option value="bisque">Bisque</option>
+                <option value="glaze">Glaze</option>
+              </select>
+            </label>
+            <label className="history-filters__field">
+              <span>Date</span>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              />
+            </label>
+            {filtersActive && (
+              <button type="button" className="history-filters__clear" onClick={clearFilters}>
+                Show all
+              </button>
+            )}
+          </div>
+        )}
+
         {history.length === 0 ? (
           <p className="home-hint">No completed firings yet. Finished runs will show up here.</p>
+        ) : filteredHistory.length === 0 ? (
+          <p className="home-hint">
+            No firings match these filters.{' '}
+            <button type="button" className="history-filters__link" onClick={clearFilters}>
+              Show all
+            </button>
+          </p>
         ) : (
           <ul className="history-list">
-            {history.map((firing) => (
+            {filteredHistory.map((firing) => (
               <li key={firing.id} className="firing-card history-card">
                 <div className="history-card__header">
                   <div className="firing-card__top">
