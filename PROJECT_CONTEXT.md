@@ -17,10 +17,10 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Discovery & requirements | **Complete** | All open questions answered |
-| Design (Figma → tokens) | **Ready to start** | Design System 2.0 linked; connect Figma Desktop MCP next |
-| Tech setup | Not started | PWA, **offline-first** (garage, no Wi‑Fi at kiln) |
-| MVP build | Not started | Scope locked from answers + paper logs |
-| iPad testing | Not started | iPad Pro 11" (3rd gen) |
+| Design (Figma → tokens) | **Done (v1)** | Tokens in `src/styles/tokens.css` + `docs/DESIGN_TOKENS.md` |
+| Tech setup | **In progress** | Vite + React + PWA scaffolded |
+| MVP build | **Started** | Home + active firing log (draft) |
+| iPad testing | Not started | Run `npm run dev` then open on iPad |
 
 **Last updated:** 2026-07-10
 
@@ -215,12 +215,16 @@ fire-starter/
 ├── PROJECT_CONTEXT.md
 ├── INSTRUCTIONS.md
 ├── README.md
+├── package.json
+├── src/
+│   ├── styles/tokens.css     ← Figma design tokens
+│   ├── screens/              ← Home + Active firing
+│   └── components/Button.tsx
+├── public/
 └── docs/
+    ├── DESIGN_TOKENS.md
     ├── OVERVIEW.md
-    ├── REQUIREMENTS_QUESTIONS.md
-    ├── FIRING_RESEARCH.md
-    ├── TECH_RECOMMENDATIONS.md
-    └── CURSOR_GETTING_STARTED.md
+    └── …
 ```
 
 ## Session log
@@ -230,3 +234,4 @@ fire-starter/
 | 2026-07-10 | Created project docs, research, discovery questions; initialized repo |
 | 2026-07-10 | Recorded full requirements answers + paper log / kiln photo insights; drafted MVP backlog |
 | 2026-07-10 | Locked theme (light), kWh logging, and Figma Design System 2.0 link; discovery complete |
+| 2026-07-10 | Pulled Inkblot tokens from Figma; scaffolded Vite/React PWA with home + active log screens |

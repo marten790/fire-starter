@@ -1,0 +1,99 @@
+/**
+ * Design tokens from Figma Design System 2.0 (Inkblot)
+ * Source: https://www.figma.com/design/1n1CyxHO40140szSX27TCQ/Design-System-2.0--Copy-
+ * Light theme only (Fire Starter preference).
+ */
+:root {
+  /* Brand */
+  --brand-inkblot-purple: #757eff;
+  --brand-inkblot-blue: #1eaffa;
+  --brand-inkblot-dark: #101321;
+  --brand-inkblot-black: #1a1a1c;
+  --brand-inkblot-ink: #212638;
+  --brand-inkblot-white: #ffffff;
+
+  /* Primary */
+  --color-primary-700: #1e2366;
+  --color-primary-600: #363c99;
+  --color-primary-400: #757eff;
+  --color-primary-300: #abb1fe;
+  --color-primary-200: #cdd0ff;
+  --color-primary-100: #f1f2ff;
+  --color-primary: var(--color-primary-400);
+
+  /* Secondary */
+  --color-secondary-700: #003d57;
+  --color-secondary-600: #006d9b;
+  --color-secondary-400: #10a1df;
+  --color-secondary-300: #70c7ec;
+  --color-secondary-200: #a0e2ff;
+  --color-secondary-100: #e7f8ff;
+  --color-secondary: var(--color-secondary-400);
+
+  /* Tertiary */
+  --color-tertiary-700: #165a51;
+  --color-tertiary-600: #2c8d80;
+  --color-tertiary-400: #4ac0b0;
+  --color-tertiary-300: #6ff3e1;
+  --color-tertiary-200: #b2fff4;
+  --color-tertiary-100: #f1fffd;
+  --color-tertiary: var(--color-tertiary-400);
+
+  /* Auxiliary (warm — useful for kiln heat cues) */
+  --color-aux-700: #995134;
+  --color-aux-400: #ff8156;
+  --color-aux-300: #ffb79a;
+  --color-aux-100: #ffe7dd;
+  --color-aux: var(--color-aux-400);
+
+  /* Surfaces */
+  --surface-background: #ffffff;
+  --surface-main: #f9f9f9;
+  --surface-primary: var(--color-primary-400);
+  --border-default: #efefef;
+
+  /* Text */
+  --text-full: #1f1e1e;
+  --text-x-high: #282828;
+  --text-high: #414141;
+  --text-mid: #6a6a6a;
+  --text-low: #b5b5b5;
+  --text-x-low: #dfdfdf;
+  --text-xx-low: #f9f9f9;
+  --text-on-primary: #ffffff;
+
+  /* Typography */
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, 'PingFang SC', BlinkMacSystemFont, sans-serif;
+
+  --text-h1-size: 30px;
+  --text-h1-line: 38px;
+  --text-h2-size: 24px;
+  --text-h2-line: 32px;
+  --text-h3-size: 20px;
+  --text-h3-line: 28px;
+  --text-title-size: 18px;
+  --text-title-line: 26px;
+  --text-subtitle-size: 16px;
+  --text-subtitle-line: 24px;
+  --text-body-size: 14px;
+  --text-body-line: 22px;
+  --text-caption-size: 12px;
+  --text-caption-line: 18px;
+
+  /* Spacing & radius (from button tokens + iPad-friendly scale) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 64px;
+
+  /* Touch targets */
+  --tap-min: 48px;
+}

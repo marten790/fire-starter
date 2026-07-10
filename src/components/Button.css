@@ -1,0 +1,54 @@
+.fs-btn {
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1.5px solid transparent;
+  font-family: var(--font-heading);
+  font-size: var(--text-subtitle-size);
+  line-height: var(--text-subtitle-line);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.fs-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fs-btn--primary {
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+}
+
+.fs-btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-600);
+}
+
+.fs-btn--outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.fs-btn--outline:hover:not(:disabled) {
+  background: var(--color-primary-100);
+}
+
+.fs-btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.fs-btn--aux {
+  background: var(--color-aux);
+  color: var(--text-on-primary);
+}
+
+.fs-btn--aux:hover:not(:disabled) {
+  background: var(--color-aux-700);
+}
+
+.fs-btn--block {
+  width: 100%;
+}

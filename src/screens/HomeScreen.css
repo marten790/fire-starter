@@ -1,0 +1,10 @@
+.home-title {
+  margin-top: var(--space-4);
+}
+
+.home-lead {
+  max-width: 36ch;
+  font-size: var(--text-subtitle-size);
+  line-height: var(--text-subtitle-line);
+  color: var(--text-mid);
+}

@@ -1,0 +1,58 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--text-full);
+  background: var(--surface-main);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-full);
+}
+
+h1 {
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+}
+
+h2 {
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+}
+
+h3 {
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+}
+
+p {
+  margin: 0;
+  color: var(--text-high);
+}
