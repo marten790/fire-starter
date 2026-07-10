@@ -155,16 +155,26 @@ export function HomeScreen({
         ) : (
           <ul className="history-list">
             {history.map((firing) => (
-              <li key={firing.id} className="history-item">
-                <button
-                  type="button"
-                  className="firing-card"
-                  onClick={() => onOpenFiring(firing.id)}
-                >
+              <li key={firing.id} className="firing-card history-card">
+                <div className="history-card__header">
                   <div className="firing-card__top">
                     <span className="firing-card__badge firing-card__badge--done">Done</span>
                     <span>{typeLabel(firing.type)}</span>
                   </div>
+                  <button
+                    type="button"
+                    className="history-card__delete"
+                    onClick={() => handleDelete(firing)}
+                    aria-label={`Delete ${firing.name}`}
+                  >
+                    Delete
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  className="history-card__body"
+                  onClick={() => onOpenFiring(firing.id)}
+                >
                   <strong className="firing-card__name">{firing.name}</strong>
                   <div className="firing-card__meta">
                     <span>{formatElapsed(elapsedForCompleted(firing))}</span>
@@ -175,13 +185,6 @@ export function HomeScreen({
                   </div>
                   <span className="firing-card__cta">View details →</span>
                 </button>
-                <Button
-                  className="history-item__delete"
-                  variant="danger"
-                  onClick={() => handleDelete(firing)}
-                >
-                  Delete
-                </Button>
               </li>
             ))}
           </ul>

@@ -92,14 +92,47 @@
   gap: var(--space-3);
 }
 
-.history-item {
-  display: flex;
-  flex-direction: column;
+.history-card {
   gap: var(--space-2);
 }
 
-.history-item__delete {
-  align-self: stretch;
+.history-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.history-card__delete {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-danger);
+  font-family: var(--font-body);
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.history-card__delete:hover {
+  background: var(--color-danger-100);
+}
+
+.history-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  min-height: var(--tap-min);
 }
 
 .firing-card {
@@ -109,11 +142,9 @@
   border: 1.5px solid var(--border-default);
   border-radius: var(--radius-lg);
   background: var(--surface-background);
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  min-height: var(--tap-min);
 }
 
 .firing-card__top {
