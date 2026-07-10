@@ -24,6 +24,8 @@ export type PhaseReading = {
 }
 
 export type ConeEvent = {
+  /** Stable id for toggle state, e.g. "06-down" */
+  key?: string
   clockTime?: string
   tempC: number
   note: string

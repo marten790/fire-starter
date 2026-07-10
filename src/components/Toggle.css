@@ -1,0 +1,80 @@
+.fs-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--tap-min);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+.fs-toggle__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fs-toggle__label {
+  font-family: var(--font-body);
+  font-size: var(--text-subtitle-size);
+  line-height: var(--text-subtitle-line);
+  color: var(--text-full);
+  font-weight: 500;
+}
+
+.fs-toggle__hint {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--text-mid);
+}
+
+.fs-toggle__control {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fs-toggle__control input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.fs-toggle__track {
+  display: block;
+  width: 52px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--text-x-low);
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.fs-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-background);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.fs-toggle__control input:checked + .fs-toggle__track {
+  background: var(--color-primary);
+}
+
+.fs-toggle__control input:checked + .fs-toggle__track .fs-toggle__thumb {
+  transform: translateX(20px);
+}
+
+.fs-toggle__control input:focus-visible + .fs-toggle__track {
+  outline: 2px solid var(--color-primary-300);
+  outline-offset: 2px;
+}
