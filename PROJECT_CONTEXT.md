@@ -235,3 +235,4 @@ fire-starter/
 | 2026-07-10 | Recorded full requirements answers + paper log / kiln photo insights; drafted MVP backlog |
 | 2026-07-10 | Locked theme (light), kWh logging, and Figma Design System 2.0 link; discovery complete |
 | 2026-07-10 | Pulled Inkblot tokens from Figma; scaffolded Vite/React PWA with home + active log screens |
+| 2026-07-10 | Imported 8 paper kiln log sheets into History (heating, cooling, results) |

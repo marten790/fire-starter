@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
+import { FiringDetails } from '../components/FiringDetails'
 import { TempChart } from '../components/TempChart'
 import { formatElapsed } from '../lib/firings'
 import type { FiringSession, HeatingLogEntry } from '../types/firing'
@@ -194,6 +195,8 @@ export function ActiveFiringScreen({
       )}
 
       {firing.entries.length > 0 && <TempChart entries={firing.entries} />}
+
+      <FiringDetails firing={firing} />
     </main>
   )
 }

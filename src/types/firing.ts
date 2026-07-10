@@ -14,6 +14,37 @@ export type HeatingLogEntry = {
   notes?: string
 }
 
+export type PhaseReading = {
+  clockTime?: string
+  dial?: number
+  tempC?: number
+  kWh?: number
+  witnessCone?: string
+  notes?: string
+}
+
+export type ConeEvent = {
+  clockTime?: string
+  tempC: number
+  note: string
+}
+
+export type CoolingLogEntry = {
+  label: string
+  clockTime?: string
+  tempC?: number
+  notes?: string
+}
+
+export type FiringResults = {
+  coneBottomMidTop?: string
+  clayOutcome?: string
+  glazeOutcome?: string
+  defects?: string
+  adjustments?: string
+  notes?: string
+}
+
 export type FiringSession = {
   id: string
   type: FiringType
@@ -24,4 +55,15 @@ export type FiringSession = {
   endedAt?: number
   entries: HeatingLogEntry[]
   dial: number
+  loadedBy?: string
+  coneTarget?: string
+  weatherNote?: string
+  topTempC?: number
+  soakStart?: PhaseReading
+  soakEnd?: PhaseReading
+  switchOff?: PhaseReading
+  coneEvents?: ConeEvent[]
+  coolingLog?: CoolingLogEntry[]
+  results?: FiringResults
+  source?: 'paper-import' | 'app'
 }

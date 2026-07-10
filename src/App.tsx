@@ -4,6 +4,7 @@ import {
   getCompletedFirings,
   getRunningFiring,
   loadFirings,
+  rememberDeletedFiring,
   saveFirings,
 } from './lib/firings'
 import type { FiringSession, FiringType } from './types/firing'
@@ -51,6 +52,7 @@ export default function App() {
   }
 
   function deleteFiring(firingId: string) {
+    rememberDeletedFiring(firingId)
     setFirings((prev) => prev.filter((f) => f.id !== firingId))
     setScreen({ name: 'home' })
   }
