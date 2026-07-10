@@ -16,10 +16,10 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Discovery & requirements | **Mostly complete** | Answers recorded below; 2 small open items |
-| Design (Figma → tokens) | Not started | Figma Desktop MCP config shared; need design system access |
+| Discovery & requirements | **Complete** | All open questions answered |
+| Design (Figma → tokens) | **Ready to start** | Design System 2.0 linked; connect Figma Desktop MCP next |
 | Tech setup | Not started | PWA, **offline-first** (garage, no Wi‑Fi at kiln) |
-| MVP build | Not started | Scope drafted below from answers + paper logs |
+| MVP build | Not started | Scope locked from answers + paper logs |
 | iPad testing | Not started | iPad Pro 11" (3rd gen) |
 
 **Last updated:** 2026-07-10
@@ -31,17 +31,17 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | App name | **Fire Starter** | 2026-07-10 | Confirmed by designer |
 | Platform | Web app / PWA | 2026-07-10 | iPad-first; no App Store needed for v1 |
 | Offline | Required for MVP | 2026-07-10 | Garage kiln; no Wi‑Fi/Bluetooth on kiln |
-| Units | °C | 2026-07-10 | Thermocouple meter |
+| Theme | **Light UI** | 2026-07-10 | Designer preference for garage use |
+| Units | °C + **kWh** on readings | 2026-07-10 | Thermocouple meter; matches paper sheets |
 | Dial | 1–6 (allow half steps e.g. 3/4) | 2026-07-10 | Matches kiln + paper logs |
 | Firing names | Date-based | 2026-07-10 | User preference |
 | Kiln name | Delores | 2026-07-10 | From existing paper logs |
+| Design system | [Design System 2.0 (Copy)](https://www.figma.com/design/1n1CyxHO40140szSX27TCQ/Design-System-2.0--Copy-?node-id=0-1&m=dev) | 2026-07-10 | Figma source of truth |
 | Repo | [marten790/fire-starter](https://github.com/marten790/fire-starter) | 2026-07-10 | — |
 
 ## Open questions (remaining)
 
-1. **Light or dark UI** for kiln/garage lighting? (Q48 — not answered yet)
-2. **Figma design system** — connect Figma Desktop MCP and point us at the file/frame to use for tokens
-3. Confirm: include **electric units (kWh)** logging like your paper sheets? (Recommended: yes)
+None for discovery. Next: connect Figma Desktop MCP and extract tokens, then scaffold the app.
 
 ---
 
@@ -123,12 +123,13 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 
 | # | Answer |
 |---|--------|
-| 47 | Figma Desktop MCP: `http://127.0.0.1:3845/mcp` (to connect) |
-| 48 | *(light vs dark — still open)* |
+| 47 | Figma Desktop MCP: `http://127.0.0.1:3845/mcp` + file [Design System 2.0 (Copy)](https://www.figma.com/design/1n1CyxHO40140szSX27TCQ/Design-System-2.0--Copy-?node-id=0-1&m=dev) |
+| 48 | **Light UI** |
 | 49 / name | **Fire Starter** |
 | 50 | Use design system from Figma |
 | 51 | Success: useful enough to keep using |
 | 52 | Biggest pain today: **memory** (paper + remembering) |
+| kWh | **Yes** — log electric units on readings (like paper sheets) |
 
 ---
 
@@ -176,7 +177,7 @@ Your current sheets are the best blueprint for the app. Digital MVP should mirro
 ### MVP — replace the paper log on iPad
 - [ ] Home: Start **Bisque** or **Glaze** (kiln: Delores)
 - [ ] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
-- [ ] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + optional kWh + note)
+- [ ] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
 - [ ] Reminder every 30–60 min while firing is active
 - [ ] Candling helpers: door ajar / close at 100°C prompts
 - [ ] Cone event log during fire (started / down + time + temp)
@@ -228,3 +229,4 @@ fire-starter/
 |------|-------------|
 | 2026-07-10 | Created project docs, research, discovery questions; initialized repo |
 | 2026-07-10 | Recorded full requirements answers + paper log / kiln photo insights; drafted MVP backlog |
+| 2026-07-10 | Locked theme (light), kWh logging, and Figma Design System 2.0 link; discovery complete |
