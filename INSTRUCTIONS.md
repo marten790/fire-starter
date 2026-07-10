@@ -46,7 +46,6 @@ The assistant should run `git add`, `git commit`, and `git push` for you. You do
 | `docs/REQUIREMENTS_QUESTIONS.md` | Assistant | When we add new questions |
 | Code / design tokens | Assistant | During build phases |
 
-## Do not commit
+## If `npm run dev` fails on Windows
 
-- Passwords, API keys, or `.env` files with secrets
-- Large binary exports unless we explicitly need them in the repo
+PowerShell sometimes blocks npm. Use `npm.cmd run dev` or double-click `dev.cmd`. See README for the one-time ExecutionPolicy fix.

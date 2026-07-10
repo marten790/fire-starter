@@ -13,7 +13,26 @@ npm install
 npm run dev
 ```
 
-Open the URL on your PC, then on your **iPad** (same Wi‑Fi) for testing. Later: Add to Home Screen in Safari.
+Open the URL it prints (usually `http://localhost:5173`).
+
+### Windows PowerShell error (“running scripts is disabled”)
+
+If you see:
+
+> `npm.ps1 cannot be loaded because running scripts is disabled`
+
+Use either:
+
+1. **Double-click** `dev.cmd` in this folder, or in the terminal run:
+   ```bash
+   npm.cmd run dev
+   ```
+2. Or fix PowerShell once (recommended), then open a **new** terminal:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+   ```
+
+Then `npm run dev` will work normally.
 
 ## Docs
 
