@@ -19,7 +19,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | Discovery & requirements | **Complete** | All open questions answered |
 | Design (Figma → tokens) | **Done (v1)** | Tokens in `src/styles/tokens.css` + `docs/DESIGN_TOKENS.md` |
 | Tech setup | **In progress** | Vite + React + PWA scaffolded |
-| MVP build | **Started** | Home + active firing log (draft) |
+| MVP build | **In progress** | Dashboard + active log + graph + local history |
 | iPad testing | Not started | Run `npm run dev` then open on iPad |
 
 **Last updated:** 2026-07-10

@@ -1,48 +1,54 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
 import { TempChart } from '../components/TempChart'
-import type { FiringType, HeatingLogEntry } from '../types/firing'
+import { formatElapsed } from '../lib/firings'
+import type { FiringSession, HeatingLogEntry } from '../types/firing'
 import './ActiveFiringScreen.css'
 
 type Props = {
-  firingType: FiringType
+  firing: FiringSession
+  onChange: (firing: FiringSession) => void
   onEnd: () => void
-}
-
-function formatElapsed(totalSeconds: number) {
-  const h = Math.floor(totalSeconds / 3600)
-  const m = Math.floor((totalSeconds % 3600) / 60)
-  const s = totalSeconds % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  onBackToDashboard: () => void
 }
 
 function nowClock() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
-export function ActiveFiringScreen({ firingType, onEnd }: Props) {
-  const [startedAt] = useState(() => Date.now())
-  const [elapsedSec, setElapsedSec] = useState(0)
-  const [dial, setDial] = useState(1)
+export function ActiveFiringScreen({
+  firing,
+  onChange,
+  onEnd,
+  onBackToDashboard,
+}: Props) {
+  const isRunning = firing.status === 'running'
+  const [elapsedSec, setElapsedSec] = useState(() =>
+    Math.floor(((firing.endedAt ?? Date.now()) - firing.startedAt) / 1000),
+  )
+  const [dial, setDial] = useState(firing.dial)
   const [tempC, setTempC] = useState('')
   const [kWh, setKWh] = useState('')
   const [notes, setNotes] = useState('')
-  const [entries, setEntries] = useState<HeatingLogEntry[]>([])
 
   useEffect(() => {
+    if (!isRunning) {
+      setElapsedSec(Math.floor(((firing.endedAt ?? Date.now()) - firing.startedAt) / 1000))
+      return
+    }
     const id = window.setInterval(() => {
-      setElapsedSec(Math.floor((Date.now() - startedAt) / 1000))
+      setElapsedSec(Math.floor((Date.now() - firing.startedAt) / 1000))
     }, 1000)
     return () => window.clearInterval(id)
-  }, [startedAt])
+  }, [firing.startedAt, firing.endedAt, isRunning])
 
-  const lastTemp = entries.at(-1)?.tempC
-  const label = firingType === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
+  const lastTemp = firing.entries.at(-1)?.tempC
+  const label = firing.type === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
 
   const canLog = useMemo(() => {
     const t = Number(tempC)
-    return Number.isFinite(t) && t > 0
-  }, [tempC])
+    return isRunning && Number.isFinite(t) && t > 0
+  }, [tempC, isRunning])
 
   function logReading() {
     if (!canLog) return
@@ -56,16 +62,32 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
       kWh: kWh === '' ? undefined : Number(kWh),
       notes: notes.trim() || undefined,
     }
-    setEntries((prev) => [...prev, entry])
+    onChange({
+      ...firing,
+      dial,
+      entries: [...firing.entries, entry],
+    })
     setTempC('')
     setNotes('')
+  }
+
+  function updateDial(next: number) {
+    setDial(next)
+    onChange({ ...firing, dial: next })
   }
 
   return (
     <main className="app-shell active">
       <header className="active-header">
+        <div className="active-nav">
+          <button type="button" className="active-back" onClick={onBackToDashboard}>
+            ← Dashboard
+          </button>
+          {!isRunning && <span className="active-status">Completed</span>}
+        </div>
         <p className="app-brand">Fire Starter</p>
         <p className="active-type">{label}</p>
+        <p className="active-name">{firing.name}</p>
         <p className="active-timer" aria-live="polite">
           {formatElapsed(elapsedSec)}
         </p>
@@ -75,60 +97,70 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
         </p>
       </header>
 
-      <section className="active-form" aria-label="Log reading">
-        <label className="field">
-          <span>Dial (1–6)</span>
-          <input
-            type="number"
-            min={1}
-            max={6}
-            step={0.5}
-            value={dial}
-            onChange={(e) => setDial(Number(e.target.value))}
-          />
-        </label>
-        <label className="field">
-          <span>Temperature °C</span>
-          <input
-            inputMode="decimal"
-            placeholder="e.g. 360"
-            value={tempC}
-            onChange={(e) => setTempC(e.target.value)}
-          />
-        </label>
-        <label className="field">
-          <span>Electric units (kWh)</span>
-          <input
-            inputMode="decimal"
-            placeholder="optional"
-            value={kWh}
-            onChange={(e) => setKWh(e.target.value)}
-          />
-        </label>
-        <label className="field">
-          <span>Notes</span>
-          <input
-            placeholder="Door ajar, cone started…"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </label>
+      {isRunning && (
+        <section className="active-form" aria-label="Log reading">
+          <label className="field">
+            <span>Dial (1–6)</span>
+            <input
+              type="number"
+              min={1}
+              max={6}
+              step={0.5}
+              value={dial}
+              onChange={(e) => updateDial(Number(e.target.value))}
+            />
+          </label>
+          <label className="field">
+            <span>Temperature °C</span>
+            <input
+              inputMode="decimal"
+              placeholder="e.g. 360"
+              value={tempC}
+              onChange={(e) => setTempC(e.target.value)}
+            />
+          </label>
+          <label className="field">
+            <span>Electric units (kWh)</span>
+            <input
+              inputMode="decimal"
+              placeholder="optional"
+              value={kWh}
+              onChange={(e) => setKWh(e.target.value)}
+            />
+          </label>
+          <label className="field">
+            <span>Notes</span>
+            <input
+              placeholder="Door ajar, cone started…"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </label>
 
-        <div className="active-actions">
-          <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
-            Log reading
-          </Button>
-          <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
-            End firing
+          <div className="active-actions">
+            <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
+              Log reading
+            </Button>
+            <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
+              End firing
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {!isRunning && (
+        <div className="active-actions active-actions--solo">
+          <Button className="fs-btn--block" variant="primary" onClick={onBackToDashboard}>
+            Back to dashboard
           </Button>
         </div>
-      </section>
+      )}
 
-      {entries.length > 0 && (
+      {firing.entries.length > 0 && (
         <section className="active-log" aria-label="Heating log">
           <h2>Heating log</h2>
           <ul>
-            {entries
+            {firing.entries
               .slice()
               .reverse()
               .map((e) => (
@@ -145,7 +177,7 @@ export function ActiveFiringScreen({ firingType, onEnd }: Props) {
         </section>
       )}
 
-      {entries.length > 0 && <TempChart entries={entries} />}
+      {firing.entries.length > 0 && <TempChart entries={firing.entries} />}
     </main>
   )
 }

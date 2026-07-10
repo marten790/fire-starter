@@ -1,29 +1,73 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  createFiring,
+  getCompletedFirings,
+  getRunningFiring,
+  loadFirings,
+  saveFirings,
+} from './lib/firings'
+import type { FiringSession, FiringType } from './types/firing'
 import { HomeScreen } from './screens/HomeScreen'
 import { ActiveFiringScreen } from './screens/ActiveFiringScreen'
-import type { FiringType } from './types/firing'
 import './App.css'
 
-type Screen =
-  | { name: 'home' }
-  | { name: 'active'; firingType: FiringType }
+type Screen = { name: 'home' } | { name: 'active'; firingId: string }
 
 export default function App() {
+  const [firings, setFirings] = useState<FiringSession[]>(() => loadFirings())
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
 
-  if (screen.name === 'active') {
+  useEffect(() => {
+    saveFirings(firings)
+  }, [firings])
+
+  const running = getRunningFiring(firings)
+  const history = getCompletedFirings(firings)
+  const activeFiring =
+    screen.name === 'active'
+      ? firings.find((f) => f.id === screen.firingId)
+      : undefined
+
+  function startFiring(type: FiringType) {
+    if (getRunningFiring(firings)) return
+    const next = createFiring(type)
+    setFirings((prev) => [next, ...prev])
+    setScreen({ name: 'active', firingId: next.id })
+  }
+
+  function updateFiring(next: FiringSession) {
+    setFirings((prev) => prev.map((f) => (f.id === next.id ? next : f)))
+  }
+
+  function endFiring(firingId: string) {
+    setFirings((prev) =>
+      prev.map((f) =>
+        f.id === firingId
+          ? { ...f, status: 'completed', endedAt: Date.now() }
+          : f,
+      ),
+    )
+    setScreen({ name: 'home' })
+  }
+
+  if (screen.name === 'active' && activeFiring) {
     return (
       <ActiveFiringScreen
-        firingType={screen.firingType}
-        onEnd={() => setScreen({ name: 'home' })}
+        firing={activeFiring}
+        onChange={updateFiring}
+        onEnd={() => endFiring(activeFiring.id)}
+        onBackToDashboard={() => setScreen({ name: 'home' })}
       />
     )
   }
 
   return (
     <HomeScreen
-      onStartBisque={() => setScreen({ name: 'active', firingType: 'bisque' })}
-      onStartGlaze={() => setScreen({ name: 'active', firingType: 'glaze' })}
+      running={running}
+      history={history}
+      onStartBisque={() => startFiring('bisque')}
+      onStartGlaze={() => startFiring('glaze')}
+      onOpenFiring={(id) => setScreen({ name: 'active', firingId: id })}
     />
   )
 }
