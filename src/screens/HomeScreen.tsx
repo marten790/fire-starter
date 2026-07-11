@@ -2,6 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { PreStartChecklist } from '../components/PreStartChecklist'
+import {
+  exportFilename,
+  firingsToHeatingCsv,
+  firingsToJsonBackup,
+  shareOrDownloadFile,
+} from '../lib/exportData'
 import { formatElapsed, peakTemp } from '../lib/firings'
 import { formatReminderCountdown } from '../lib/reminders'
 import type { FiringSession, FiringType, PreStartChecklistItem } from '../types/firing'
@@ -10,6 +16,8 @@ import './HomeScreen.css'
 type Props = {
   running?: FiringSession
   history: FiringSession[]
+  /** All firings for export (running + completed) */
+  allFirings: FiringSession[]
   reminderNextDueAt?: number | null
   onStartFiring: (type: FiringType, checklist: PreStartChecklistItem[]) => void
   onOpenFiring: (id: string) => void
@@ -54,6 +62,7 @@ function elapsedForCompleted(firing: FiringSession) {
 export function HomeScreen({
   running,
   history,
+  allFirings,
   reminderNextDueAt = null,
   onStartFiring,
   onOpenFiring,
@@ -66,6 +75,7 @@ export function HomeScreen({
   const [pendingDelete, setPendingDelete] = useState<FiringSession | null>(null)
   const [checklistType, setChecklistType] = useState<FiringType | null>(null)
   const [now, setNow] = useState(Date.now())
+  const [exportNote, setExportNote] = useState<string | null>(null)
 
   useEffect(() => {
     if (reminderNextDueAt == null) return
@@ -92,6 +102,46 @@ export function HomeScreen({
     if (!pendingDelete) return
     onDeleteFiring(pendingDelete.id)
     setPendingDelete(null)
+  }
+
+  async function exportCsv() {
+    setExportNote(null)
+    try {
+      const result = await shareOrDownloadFile(
+        exportFilename('heating'),
+        firingsToHeatingCsv(allFirings),
+        'text/csv;charset=utf-8',
+        'Fire Starter CSV',
+      )
+      setExportNote(
+        result === 'shared'
+          ? 'CSV ready — pick WhatsApp (or Files) in the share sheet.'
+          : 'CSV downloaded. Open Files / Downloads and send it on WhatsApp.',
+      )
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return
+      setExportNote('Could not export CSV. Try again, or use Safari → Share.')
+    }
+  }
+
+  async function exportBackup() {
+    setExportNote(null)
+    try {
+      const result = await shareOrDownloadFile(
+        exportFilename('backup'),
+        firingsToJsonBackup(allFirings),
+        'application/json',
+        'Fire Starter backup',
+      )
+      setExportNote(
+        result === 'shared'
+          ? 'Full backup ready — share via WhatsApp to keep a copy.'
+          : 'Backup downloaded. Keep the .json file somewhere safe.',
+      )
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return
+      setExportNote('Could not export backup. Try again.')
+    }
   }
 
   return (
@@ -303,6 +353,33 @@ export function HomeScreen({
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="dash-section" aria-label="Export data">
+        <h2>Export / backup</h2>
+        <p className="home-hint">
+          Save a copy before updating the app, or send it to yourself on WhatsApp. Data stays on
+          this iPad unless you clear Safari site data — export is the safe copy.
+        </p>
+        <div className="app-actions">
+          <Button
+            className="fs-btn--block"
+            variant="outline"
+            disabled={allFirings.length === 0}
+            onClick={() => void exportCsv()}
+          >
+            Export CSV (readings)
+          </Button>
+          <Button
+            className="fs-btn--block"
+            variant="ghost"
+            disabled={allFirings.length === 0}
+            onClick={() => void exportBackup()}
+          >
+            Export full backup (JSON)
+          </Button>
+        </div>
+        {exportNote && <p className="export-note">{exportNote}</p>}
       </section>
 
       <section className="app-meta" aria-label="Kiln summary">

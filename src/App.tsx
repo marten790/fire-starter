@@ -194,6 +194,7 @@ export default function App() {
         <HomeScreen
           running={running}
           history={history}
+          allFirings={firings}
           reminderNextDueAt={
             reminders.enabled && running ? reminders.nextDueAt : null
           }

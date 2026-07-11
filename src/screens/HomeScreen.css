@@ -255,3 +255,19 @@
   font-weight: 600;
   font-size: var(--text-body-size);
 }
+
+.export-note {
+  margin-top: var(--space-3);
+  color: var(--text-high);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+}
+
+.app-meta {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-default);
+  color: var(--text-mid);
+  font-size: var(--text-caption-size);
+  line-height: 1.5;
+}
