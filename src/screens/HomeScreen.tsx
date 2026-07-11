@@ -182,10 +182,12 @@ export function HomeScreen({
       </header>
 
       <section className="dash-section export-top" aria-label="Export data">
+        <h2>Export</h2>
+        <p className="home-hint">Save a copy to WhatsApp before updates.</p>
         <div className="export-top__actions">
           <Button
             className="fs-btn--grow"
-            variant="outline"
+            variant="primary"
             disabled={allFirings.length === 0}
             onClick={() => void exportCsv()}
           >
@@ -193,7 +195,7 @@ export function HomeScreen({
           </Button>
           <Button
             className="fs-btn--grow"
-            variant="ghost"
+            variant="outline"
             disabled={allFirings.length === 0}
             onClick={() => void exportBackup()}
           >

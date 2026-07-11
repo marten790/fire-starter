@@ -258,6 +258,18 @@
 
 .export-top {
   margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  background: var(--surface-background);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+}
+
+.export-top h2 {
+  margin-bottom: var(--space-1);
+}
+
+.export-top .home-hint {
+  margin-bottom: var(--space-3);
 }
 
 .export-top__actions {
