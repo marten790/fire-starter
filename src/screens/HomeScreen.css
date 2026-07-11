@@ -256,6 +256,17 @@
   font-size: var(--text-body-size);
 }
 
+.export-top {
+  margin-bottom: var(--space-5);
+}
+
+.export-top__actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--space-3);
+}
+
 .export-note {
   margin-top: var(--space-3);
   color: var(--text-high);

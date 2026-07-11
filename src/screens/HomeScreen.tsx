@@ -181,6 +181,28 @@ export function HomeScreen({
         </p>
       </header>
 
+      <section className="dash-section export-top" aria-label="Export data">
+        <div className="export-top__actions">
+          <Button
+            className="fs-btn--grow"
+            variant="outline"
+            disabled={allFirings.length === 0}
+            onClick={() => void exportCsv()}
+          >
+            Export CSV
+          </Button>
+          <Button
+            className="fs-btn--grow"
+            variant="ghost"
+            disabled={allFirings.length === 0}
+            onClick={() => void exportBackup()}
+          >
+            Full backup
+          </Button>
+        </div>
+        {exportNote && <p className="export-note">{exportNote}</p>}
+      </section>
+
       <section className="dash-section current-firing" aria-label="Current firing">
         <h2>Current firing</h2>
 
@@ -353,33 +375,6 @@ export function HomeScreen({
             ))}
           </ul>
         )}
-      </section>
-
-      <section className="dash-section" aria-label="Export data">
-        <h2>Export / backup</h2>
-        <p className="home-hint">
-          Save a copy before updating the app, or send it to yourself on WhatsApp. Data stays on
-          this iPad unless you clear Safari site data — export is the safe copy.
-        </p>
-        <div className="app-actions">
-          <Button
-            className="fs-btn--block"
-            variant="outline"
-            disabled={allFirings.length === 0}
-            onClick={() => void exportCsv()}
-          >
-            Export CSV (readings)
-          </Button>
-          <Button
-            className="fs-btn--block"
-            variant="ghost"
-            disabled={allFirings.length === 0}
-            onClick={() => void exportBackup()}
-          >
-            Export full backup (JSON)
-          </Button>
-        </div>
-        {exportNote && <p className="export-note">{exportNote}</p>}
       </section>
 
       <section className="app-meta" aria-label="Kiln summary">
