@@ -87,5 +87,5 @@ export type FiringSession = {
   preStartChecklist?: PreStartChecklistItem[]
   /** Bisque candling milestones (door / peephole) */
   candling?: CandlingState
-  source?: 'paper-import' | 'app'
+  source?: 'paper-import' | 'app' | 'csv-import' | 'json-import'
 }

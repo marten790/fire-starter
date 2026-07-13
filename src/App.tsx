@@ -28,6 +28,7 @@ import type { FiringSession, FiringType, PreStartChecklistItem } from './types/f
 import { ActiveFiringScreen } from './screens/ActiveFiringScreen'
 import { DashboardScreen } from './screens/DashboardScreen'
 import { HistoryScreen } from './screens/HistoryScreen'
+import { mergeImportedFirings } from './lib/importData'
 import './App.css'
 
 type Screen =
@@ -199,6 +200,12 @@ export default function App() {
     setScreen({ name: 'home' })
   }
 
+  function importFirings(incoming: FiringSession[]) {
+    const result = mergeImportedFirings(firings, incoming)
+    setFirings(result.next)
+    return { added: result.added, skipped: result.skipped }
+  }
+
   function goTab(tab: NavTab) {
     setScreen(tab === 'history' ? { name: 'history' } : { name: 'home' })
   }
@@ -230,6 +237,7 @@ export default function App() {
           allFirings={firings}
           onOpenFiring={(id) => setScreen({ name: 'active', firingId: id })}
           onDeleteFiring={deleteFiring}
+          onImportFirings={importFirings}
         />
       ) : (
         <DashboardScreen

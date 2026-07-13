@@ -6,6 +6,60 @@
   margin-bottom: var(--space-4);
 }
 
+.history-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.import-card {
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+  background: var(--surface-background);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.import-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.import-card__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-100);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.import-card__head h2 {
+  margin: 0;
+  font-size: var(--text-title-size);
+}
+
+.import-card__head p {
+  margin: 4px 0 0;
+  color: var(--text-mid);
+  font-size: var(--text-caption-size);
+  line-height: 1.45;
+}
+
+.import-card__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
 .history-field {
   display: flex;
   flex-direction: column;

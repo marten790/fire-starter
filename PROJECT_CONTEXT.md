@@ -87,6 +87,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 - App **deploys do not wipe** local data
 - Data is lost if Safari site data is cleared, private mode, or a different device/browser
 - **Export CSV / JSON** before risky clears; paper logs seeded into history (8 imports)
+- **Import** on History: Firestarter CSV or JSON backup (duplicates by id skipped)
 
 ### Deploy workflow
 - Commit + push to `main` → GitHub
@@ -130,6 +131,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 - [x] Cone events (bisque 07/06; glaze 5/6)
 - [x] Cooling log + results
 - [x] History filters + export
+- [x] Import CSV / JSON backup into History
 - [x] Temp vs time graph
 - [x] localStorage offline storage
 - [x] Figma Product Template redesign pass
@@ -143,7 +145,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 - [ ] Multi-user / multi-kiln
 - [ ] True push when iPad locked (needs push server)
 - [ ] Orton cone reference chart in-app
-- [ ] Import JSON backup into the app
+- [x] Import JSON / CSV backup into the app
 
 ## Tech stack
 
@@ -175,7 +177,8 @@ fire-starter/
 │   │   ├── checklist.ts        ← pre-start items
 │   │   ├── candling.ts         ← bisque door / peephole helpers
 │   │   ├── reminders.ts        ← intervals, notifications, wake lock
-│   │   └── exportData.ts       ← CSV + JSON export
+│   │   ├── exportData.ts       ← CSV + JSON export
+│   │   └── importData.ts       ← CSV + JSON import into History
 │   ├── data/paperFirings.ts    ← imported paper logs
 │   ├── screens/
 │   │   ├── DashboardScreen.tsx
@@ -228,4 +231,4 @@ Heating log · peak/soak · cooling 1/2/4/8h · results (bottom/mid/top cones, o
 |------|-------------|
 | 2026-07-10 | Docs, discovery, tokens, Vite PWA, paper import, Vercel, end-of-fire, cones |
 | 2026-07-11 | Reminders; CSV/JSON export; export at top of dashboard |
-| 2026-07-13 | Figma Product Template redesign (Firestarter, Dashboard/History nav); delete heat log; checklist order; glaze cones 5/6; notification sound + wake lock; compact delete; single-line heat log; remove loaded-by meta; checklist select all; **docs refresh** |
+| 2026-07-13 | Figma redesign; heat-log delete; checklist; glaze 5/6; notifications; docs refresh; **CSV/JSON import on History** |

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { BrandMark } from '../components/BrandMark'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
@@ -8,6 +8,11 @@ import {
   shareOrDownloadFile,
 } from '../lib/exportData'
 import { formatElapsed, peakTemp } from '../lib/firings'
+import {
+  parseHeatingCsv,
+  parseJsonBackup,
+  readFileAsText,
+} from '../lib/importData'
 import type { FiringSession, FiringType } from '../types/firing'
 import './HistoryScreen.css'
 
@@ -16,6 +21,7 @@ type Props = {
   allFirings: FiringSession[]
   onOpenFiring: (id: string) => void
   onDeleteFiring: (id: string) => void
+  onImportFirings: (firings: FiringSession[]) => { added: number; skipped: number }
 }
 
 type TypeFilter = 'all' | FiringType
@@ -46,11 +52,14 @@ export function HistoryScreen({
   allFirings,
   onOpenFiring,
   onDeleteFiring,
+  onImportFirings,
 }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [dateFilter, setDateFilter] = useState('')
   const [pendingDelete, setPendingDelete] = useState<FiringSession | null>(null)
   const [exportNote, setExportNote] = useState<string | null>(null)
+  const [importNote, setImportNote] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const filteredHistory = useMemo(() => {
     return history.filter((firing) => {
@@ -82,6 +91,45 @@ export function HistoryScreen({
     }
   }
 
+  async function handleImportFile(file: File) {
+    setImportNote(null)
+    try {
+      const text = await readFileAsText(file)
+      const lower = file.name.toLowerCase()
+      const parsed = lower.endsWith('.json')
+        ? parseJsonBackup(text)
+        : parseHeatingCsv(text)
+
+      if (parsed.firings.length === 0) {
+        setImportNote(
+          parsed.errors[0] ?? 'No firings found in that file. Use a Firestarter CSV or JSON backup.',
+        )
+        return
+      }
+
+      const { added, skipped } = onImportFirings(parsed.firings)
+      const warn =
+        parsed.errors.length > 0 ? ` (${parsed.errors.length} row warning${parsed.errors.length === 1 ? '' : 's'})` : ''
+      if (added === 0) {
+        setImportNote(
+          skipped > 0
+            ? `Nothing new — ${skipped} firing${skipped === 1 ? '' : 's'} already in History.${warn}`
+            : `Nothing imported.${warn}`,
+        )
+      } else {
+        setImportNote(
+          `Imported ${added} firing${added === 1 ? '' : 's'}${
+            skipped > 0 ? ` · skipped ${skipped} duplicate${skipped === 1 ? '' : 's'}` : ''
+          }.${warn}`,
+        )
+      }
+    } catch {
+      setImportNote('Could not read that file.')
+    } finally {
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
   return (
     <main className="app-shell history-page">
       <ConfirmDialog
@@ -101,11 +149,57 @@ export function HistoryScreen({
         onCancel={() => setPendingDelete(null)}
       />
 
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".csv,.json,text/csv,application/json"
+        className="history-file-input"
+        aria-hidden="true"
+        tabIndex={-1}
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) void handleImportFile(file)
+        }}
+      />
+
       <BrandMark
         compact
         title="History"
         subtitle="Jump into a past firing anytime to review readings, then come back here."
       />
+
+      <section className="import-card" aria-label="Import firings">
+        <div className="import-card__head">
+          <div className="import-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+              <path
+                d="M12 21V11m0 0 4 4m-4-4-4 4M5 9V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div>
+            <h2>Import</h2>
+            <p>
+              Bring back a Firestarter CSV or JSON backup into History. Duplicates (same id) are
+              skipped.
+            </p>
+          </div>
+        </div>
+        <div className="import-card__actions">
+          <Button
+            className="fs-btn--grow"
+            variant="primary"
+            onClick={() => fileRef.current?.click()}
+          >
+            Import CSV / backup
+          </Button>
+        </div>
+        {importNote && <p className="history-note">{importNote}</p>}
+      </section>
 
       <div className="history-toolbar">
         <label className="history-field">
@@ -129,7 +223,7 @@ export function HistoryScreen({
         </label>
         <Button
           className="history-export"
-          variant="primary"
+          variant="outline"
           disabled={allFirings.length === 0}
           onClick={() => void exportCsv()}
         >
@@ -151,7 +245,7 @@ export function HistoryScreen({
       {exportNote && <p className="history-note">{exportNote}</p>}
 
       {history.length === 0 ? (
-        <p className="history-empty">No completed firings yet.</p>
+        <p className="history-empty">No completed firings yet. Import a CSV backup above, or finish a fire.</p>
       ) : filteredHistory.length === 0 ? (
         <p className="history-empty">No firings match these filters.</p>
       ) : (
