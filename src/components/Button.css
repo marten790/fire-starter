@@ -67,3 +67,10 @@
   flex: 1;
   min-width: 0;
 }
+
+.fs-btn--sm {
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-width: 1px;
+}

@@ -176,7 +176,11 @@ export function HistoryScreen({
                   </span>
                   <em>View details →</em>
                 </button>
-                <Button variant="danger" onClick={() => setPendingDelete(firing)}>
+                <Button
+                  className="fs-btn--sm"
+                  variant="danger"
+                  onClick={() => setPendingDelete(firing)}
+                >
                   Delete
                 </Button>
               </li>

@@ -179,7 +179,7 @@ export function DashboardScreen({
                 Enter reading / open firing
               </Button>
               <Button
-                className="fs-btn--grow"
+                className="fs-btn--sm"
                 variant="danger"
                 onClick={() => setPendingDelete(running)}
               >
