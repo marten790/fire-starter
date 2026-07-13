@@ -6,29 +6,21 @@ export type ChecklistItemDef = {
   hint?: string
 }
 
-const SHARED: ChecklistItemDef[] = [
+const BISQUE: ChecklistItemDef[] = [
   {
     key: 'loaded',
     label: 'Kiln loaded',
     hint: 'Shelves set, ware clear of elements',
   },
   {
-    key: 'meter',
-    label: 'Meter connected',
-    hint: 'Thermocouple in and reading °C',
-  },
-  {
-    key: 'power',
-    label: 'Power ON',
-    hint: 'Wall isolator switched on',
-  },
-]
-
-const BISQUE: ChecklistItemDef[] = [
-  {
     key: 'cones',
     label: 'Cone 06 placed',
     hint: 'Witness cone where you can see it',
+  },
+  {
+    key: 'meter',
+    label: 'Meter connected',
+    hint: 'Thermocouple in and reading °C',
   },
   {
     key: 'peephole',
@@ -42,16 +34,31 @@ const BISQUE: ChecklistItemDef[] = [
   },
   {
     key: 'dial',
-    label: 'Dial on low start',
+    label: 'Dial on 1',
     hint: 'Ready to candle slowly',
+  },
+  {
+    key: 'power',
+    label: 'Power ON',
+    hint: 'Wall isolator switched on',
   },
 ]
 
 const GLAZE: ChecklistItemDef[] = [
   {
+    key: 'loaded',
+    label: 'Kiln loaded',
+    hint: 'Shelves set, ware clear of elements',
+  },
+  {
     key: 'cones',
     label: 'Cones placed',
     hint: '5 bottom · 5/6/7 mid · 7 top',
+  },
+  {
+    key: 'meter',
+    label: 'Meter connected',
+    hint: 'Thermocouple in and reading °C',
   },
   {
     key: 'peephole',
@@ -65,15 +72,18 @@ const GLAZE: ChecklistItemDef[] = [
   },
   {
     key: 'dial',
-    label: 'Dial ready to start',
+    label: 'Dial on 1',
     hint: 'Start setting chosen',
+  },
+  {
+    key: 'power',
+    label: 'Power ON',
+    hint: 'Wall isolator switched on',
   },
 ]
 
 export function checklistFor(type: FiringType): ChecklistItemDef[] {
-  const typeItems = type === 'bisque' ? BISQUE : GLAZE
-  // Shared first (load / meter / power), then type-specific
-  return [...SHARED, ...typeItems]
+  return type === 'bisque' ? BISQUE : GLAZE
 }
 
 export function firingTypeLabel(type: FiringType) {
