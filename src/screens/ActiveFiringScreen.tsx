@@ -383,14 +383,13 @@ export function ActiveFiringScreen({
               .reverse()
               .map((e) => (
                 <li key={e.id}>
-                  <div className="active-log__main">
-                    <span>
-                      {e.clockTime} · dial {e.dial}
-                    </span>
+                  <p className="active-log__main">
+                    <span>{e.clockTime}</span>
+                    <span>· dial {e.dial}</span>
                     <strong>{e.tempC}°C</strong>
-                    {e.kWh != null && <span>{e.kWh} kWh</span>}
-                    {e.notes && <em>{e.notes}</em>}
-                  </div>
+                    {e.kWh != null && <span>· {e.kWh} kWh</span>}
+                    {e.notes && <em>· {e.notes}</em>}
+                  </p>
                   <button
                     type="button"
                     className="active-log__delete"
