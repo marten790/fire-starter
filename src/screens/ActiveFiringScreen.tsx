@@ -75,6 +75,7 @@ export function ActiveFiringScreen({
   const [kWh, setKWh] = useState('')
   const [notes, setNotes] = useState('')
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [pendingDeleteEntryId, setPendingDeleteEntryId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isRunning) {
@@ -161,6 +162,19 @@ export function ActiveFiringScreen({
     })
   }
 
+  function deleteEntry(entryId: string) {
+    onChange({
+      ...firing,
+      entries: firing.entries.filter((entry) => entry.id !== entryId),
+    })
+    setPendingDeleteEntryId(null)
+  }
+
+  const pendingDeleteEntry =
+    pendingDeleteEntryId != null
+      ? firing.entries.find((entry) => entry.id === pendingDeleteEntryId)
+      : undefined
+
   return (
     <main className="app-shell active">
       <ConfirmDialog
@@ -174,6 +188,22 @@ export function ActiveFiringScreen({
           onDelete()
         }}
         onCancel={() => setConfirmDeleteOpen(false)}
+      />
+
+      <ConfirmDialog
+        open={pendingDeleteEntry != null}
+        title="Delete reading?"
+        message={
+          pendingDeleteEntry
+            ? `Remove ${pendingDeleteEntry.clockTime} · ${pendingDeleteEntry.tempC}°C from the heating log?`
+            : ''
+        }
+        confirmLabel="Delete"
+        cancelLabel="Keep it"
+        onConfirm={() => {
+          if (pendingDeleteEntryId) deleteEntry(pendingDeleteEntryId)
+        }}
+        onCancel={() => setPendingDeleteEntryId(null)}
       />
 
       <BrandMark
@@ -357,12 +387,22 @@ export function ActiveFiringScreen({
               .reverse()
               .map((e) => (
                 <li key={e.id}>
-                  <span>
-                    {e.clockTime} · dial {e.dial}
-                  </span>
-                  <strong>{e.tempC}°C</strong>
-                  {e.kWh != null && <span>{e.kWh} kWh</span>}
-                  {e.notes && <em>{e.notes}</em>}
+                  <div className="active-log__main">
+                    <span>
+                      {e.clockTime} · dial {e.dial}
+                    </span>
+                    <strong>{e.tempC}°C</strong>
+                    {e.kWh != null && <span>{e.kWh} kWh</span>}
+                    {e.notes && <em>{e.notes}</em>}
+                  </div>
+                  <button
+                    type="button"
+                    className="active-log__delete"
+                    onClick={() => setPendingDeleteEntryId(e.id)}
+                    aria-label={`Delete reading ${e.clockTime} ${e.tempC}°C`}
+                  >
+                    Delete
+                  </button>
                 </li>
               ))}
           </ul>
