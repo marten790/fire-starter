@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { BottomNav, type NavTab } from './components/BottomNav'
 import { ReminderAlert } from './components/ReminderAlert'
 import {
   completeFiring,
@@ -20,11 +21,15 @@ import {
   type ReminderSettings,
 } from './lib/reminders'
 import type { FiringSession, FiringType, PreStartChecklistItem } from './types/firing'
-import { HomeScreen } from './screens/HomeScreen'
 import { ActiveFiringScreen } from './screens/ActiveFiringScreen'
+import { DashboardScreen } from './screens/DashboardScreen'
+import { HistoryScreen } from './screens/HistoryScreen'
 import './App.css'
 
-type Screen = { name: 'home' } | { name: 'active'; firingId: string }
+type Screen =
+  | { name: 'home' }
+  | { name: 'history' }
+  | { name: 'active'; firingId: string }
 
 export default function App() {
   const [firings, setFirings] = useState<FiringSession[]>(() => loadFirings())
@@ -49,8 +54,8 @@ export default function App() {
       : undefined
 
   const runningId = running?.id
+  const navTab: NavTab = screen.name === 'history' ? 'history' : 'dashboard'
 
-  // Keep reminder schedule tied to the running firing
   useEffect(() => {
     setReminders((prev) => {
       if (!runningId) {
@@ -68,7 +73,6 @@ export default function App() {
     })
   }, [runningId, reminders.enabled])
 
-  // Fire reminder when due
   useEffect(() => {
     if (!running || !reminders.enabled || reminders.nextDueAt == null) {
       setReminderOpen(false)
@@ -84,7 +88,7 @@ export default function App() {
       playReminderChime()
       showBrowserNotification(
         'Time to check Delores',
-        `Fire Starter · ${reminders.intervalMinutes} min reminder`,
+        `Firestarter · ${reminders.intervalMinutes} min reminder`,
       )
     }
 
@@ -169,6 +173,10 @@ export default function App() {
     setScreen({ name: 'home' })
   }
 
+  function goTab(tab: NavTab) {
+    setScreen(tab === 'history' ? { name: 'history' } : { name: 'home' })
+  }
+
   return (
     <>
       <ReminderAlert
@@ -190,10 +198,16 @@ export default function App() {
           onDelete={() => deleteFiring(activeFiring.id)}
           onBackToDashboard={() => setScreen({ name: 'home' })}
         />
-      ) : (
-        <HomeScreen
-          running={running}
+      ) : screen.name === 'history' ? (
+        <HistoryScreen
           history={history}
+          allFirings={firings}
+          onOpenFiring={(id) => setScreen({ name: 'active', firingId: id })}
+          onDeleteFiring={deleteFiring}
+        />
+      ) : (
+        <DashboardScreen
+          running={running}
           allFirings={firings}
           reminderNextDueAt={
             reminders.enabled && running ? reminders.nextDueAt : null
@@ -203,6 +217,8 @@ export default function App() {
           onDeleteFiring={deleteFiring}
         />
       )}
+
+      <BottomNav active={navTab} onChange={goTab} />
     </>
   )
 }

@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Fire Starter',
-        short_name: 'Fire Starter',
+        name: 'Firestarter',
+        short_name: 'Firestarter',
         description: 'Kiln firing dashboard for Delores',
         theme_color: '#757eff',
         background_color: '#ffffff',

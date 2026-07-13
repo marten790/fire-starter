@@ -51,9 +51,9 @@
   --color-danger-100: #ffe4e8;
   --color-danger: var(--color-danger-600);
 
-  /* Surfaces */
   --surface-background: #ffffff;
-  --surface-main: #f9f9f9;
+  --surface-main: #f5f5f7;
+  --surface-input: #f9f9fb;
   --surface-primary: var(--color-primary-400);
   --border-default: #efefef;
 

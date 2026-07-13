@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import { BisqueSection } from '../components/BisqueSection'
+import { BrandMark } from '../components/BrandMark'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { EndOfFireForm } from '../components/EndOfFireForm'
 import { FiringDetails } from '../components/FiringDetails'
-import { BisqueSection } from '../components/BisqueSection'
 import { ReminderControls } from '../components/ReminderControls'
 import { TempChart } from '../components/TempChart'
 import { Toggle } from '../components/Toggle'
@@ -50,6 +51,11 @@ function coneTogglesFor(type: FiringType): ConeToggleDef[] {
   ]
 }
 
+function pageTitle(firing: FiringSession) {
+  if (firing.status !== 'running') return 'Cooling'
+  return firing.type === 'bisque' ? 'Bisque Firing' : 'Glaze Firing'
+}
+
 export function ActiveFiringScreen({
   firing,
   reminders,
@@ -91,6 +97,11 @@ export function ActiveFiringScreen({
   const lastTemp = firing.entries.at(-1)?.tempC
   const label = firing.type === 'bisque' ? 'Bisque · Cone 06' : 'Glaze · Cone 6 / 7'
   const coneToggles = useMemo(() => coneTogglesFor(firing.type), [firing.type])
+  const startedLabel = new Date(firing.startedAt).toLocaleString(undefined, {
+    weekday: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
 
   const canLog = useMemo(() => {
     const t = Number(tempC)
@@ -165,27 +176,50 @@ export function ActiveFiringScreen({
         onCancel={() => setConfirmDeleteOpen(false)}
       />
 
-      <header className="active-header">
-        <div className="active-nav">
-          <button type="button" className="active-back" onClick={onBackToDashboard}>
-            ← Back to dashboard
-          </button>
-          {!isRunning && <span className="active-status">Cooling / results</span>}
+      <BrandMark
+        compact
+        title={pageTitle(firing)}
+        subtitle="Jump into the current firing anytime to log readings, then come back here."
+      />
+
+      <div className="active-nav">
+        <button type="button" className="active-back" onClick={onBackToDashboard}>
+          ← Back to dashboard
+        </button>
+        {!isRunning && <span className="active-status">Cooling / results</span>}
+      </div>
+
+      <section className="session-card">
+        <div className="session-card__top">
+          <div>
+            <p className="session-card__type">{label.toUpperCase()}</p>
+            <p className="session-card__date">{firing.name}</p>
+          </div>
+          <span
+            className={
+              isRunning ? 'status-pill status-pill--live' : 'status-pill status-pill--off'
+            }
+          >
+            {isRunning ? 'Firing in progress' : 'Kiln off'}
+          </span>
         </div>
-        <p className="app-brand">Fire Starter</p>
-        <p className="active-type">{label}</p>
-        <p className="active-name">{firing.name}</p>
-        <p className="active-timer" aria-live="polite">
+        <p className="session-card__timer" aria-live="polite">
           {formatElapsed(elapsedSec)}
         </p>
-        <p className="active-last">
-          Last reading:{' '}
-          {lastTemp != null ? <strong>{lastTemp}°C</strong> : '—'}
-        </p>
-      </header>
+        <div className="session-card__meta">
+          <span>Cone target: {firing.coneTarget ?? '—'}</span>
+          <span>Started: {startedLabel}</span>
+          <span>
+            Last reading: {lastTemp != null ? <strong>{lastTemp}°C</strong> : '—'}
+          </span>
+        </div>
+      </section>
+
+      {firing.entries.length > 0 && <TempChart entries={firing.entries} />}
 
       {isRunning && (
-        <section className="active-form" aria-label="Log reading">
+        <section className="panel-card" aria-label="Log reading">
+          <h2>Log a reading</h2>
           <label className="field">
             <span>Dial (1–6)</span>
             <input
@@ -271,17 +305,20 @@ export function ActiveFiringScreen({
             <ReminderControls settings={reminders} onChange={onRemindersChange} />
           )}
 
-          <div className="active-actions">
-            <Button className="fs-btn--grow" variant="ghost" onClick={onEnd}>
-              End firing → cooling
-            </Button>
-            <Button
-              className="fs-btn--grow"
-              variant="danger"
-              onClick={() => setConfirmDeleteOpen(true)}
-            >
-              Delete firing
-            </Button>
+          <div className="finish-block">
+            <h3>Finish firing</h3>
+            <div className="active-actions">
+              <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
+                End firing → cooling
+              </Button>
+              <Button
+                className="fs-btn--grow"
+                variant="danger"
+                onClick={() => setConfirmDeleteOpen(true)}
+              >
+                Delete firing
+              </Button>
+            </div>
           </div>
         </section>
       )}
@@ -290,26 +327,29 @@ export function ActiveFiringScreen({
         <>
           <p className="wrap-up-lead">
             Kiln is off. Log cooling checks and results below — same as your paper cooling sheet.
-            Come back anytime from History.
           </p>
           <EndOfFireForm firing={firing} onChange={onChange} />
-          <div className="active-actions active-actions--solo">
-            <Button className="fs-btn--grow" variant="primary" onClick={onBackToDashboard}>
-              Done — dashboard
-            </Button>
-            <Button
-              className="fs-btn--grow"
-              variant="danger"
-              onClick={() => setConfirmDeleteOpen(true)}
-            >
-              Delete firing
-            </Button>
+          <div className="finish-block">
+            <h3>Finish firing</h3>
+            <div className="active-actions active-actions--solo">
+              <Button className="fs-btn--grow" variant="primary" onClick={onBackToDashboard}>
+                Done — dashboard
+              </Button>
+              <Button
+                className="fs-btn--grow"
+                variant="danger"
+                onClick={() => setConfirmDeleteOpen(true)}
+              >
+                Delete firing
+              </Button>
+            </div>
+            <p className="finish-note">Ending will stop the firing and begin the cooling phase.</p>
           </div>
         </>
       )}
 
       {firing.entries.length > 0 && (
-        <section className="active-log" aria-label="Heating log">
+        <section className="panel-card active-log" aria-label="Heating log">
           <h2>Heating log</h2>
           <ul>
             {firing.entries
@@ -328,8 +368,6 @@ export function ActiveFiringScreen({
           </ul>
         </section>
       )}
-
-      {firing.entries.length > 0 && <TempChart entries={firing.entries} />}
 
       {isRunning && <FiringDetails firing={firing} />}
     </main>

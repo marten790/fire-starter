@@ -1,13 +1,9 @@
-.active-header {
-  margin-bottom: var(--space-5);
-}
-
 .active-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .active-back {
@@ -24,46 +20,105 @@
 
 .active-status {
   font-size: var(--text-caption-size);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-tertiary-600);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.active-type {
+.session-card {
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  background: var(--surface-background);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.session-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.session-card__type {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+.session-card__date {
+  margin: 4px 0 0;
   color: var(--text-mid);
-  font-size: var(--text-subtitle-size);
-  line-height: var(--text-subtitle-line);
+  font-size: var(--text-caption-size);
 }
 
-.active-name {
-  margin-top: var(--space-1);
-  color: var(--text-high);
-  font-size: var(--text-body-size);
-}
-
-.active-timer {
-  margin-top: var(--space-3);
+.session-card__timer {
+  margin: 0;
   font-family: var(--font-heading);
   font-size: 48px;
   line-height: 1.1;
   font-weight: 700;
-  color: var(--text-full);
   font-variant-numeric: tabular-nums;
 }
 
-.active-last {
-  margin-top: var(--space-2);
+.session-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-caption-size);
   color: var(--text-mid);
 }
 
-.active-form {
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pill--live {
+  background: var(--color-aux);
+  color: var(--text-on-primary);
+}
+
+.status-pill--off {
+  background: var(--color-aux-100);
+  color: var(--color-aux-700);
+}
+
+.status-pill--live::before,
+.status-pill--off::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.panel-card {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4);
+  margin-top: var(--space-4);
   background: var(--surface-background);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
+}
+
+.panel-card h2 {
+  font-size: var(--text-title-size);
 }
 
 .field {
@@ -79,7 +134,7 @@
   padding: var(--space-3);
   border: 1.5px solid var(--border-default);
   border-radius: var(--radius-sm);
-  background: var(--surface-background);
+  background: var(--surface-input, #f9f9fb);
   color: var(--text-full);
   font-size: var(--text-subtitle-size);
 }
@@ -87,14 +142,6 @@
 .field input:focus {
   outline: 2px solid var(--color-primary-300);
   border-color: var(--color-primary);
-}
-
-.active-log {
-  margin-top: var(--space-5);
-}
-
-.active-log h2 {
-  margin-bottom: var(--space-3);
 }
 
 .active-log ul {
@@ -110,8 +157,7 @@
   display: grid;
   gap: 2px;
   padding: var(--space-3);
-  background: var(--surface-background);
-  border: 1px solid var(--border-default);
+  background: var(--surface-main);
   border-radius: var(--radius-sm);
   font-size: var(--text-body-size);
 }
@@ -130,12 +176,11 @@
 }
 
 .active-actions--solo {
-  margin-bottom: var(--space-4);
-  margin-top: var(--space-5);
+  margin-top: 0;
 }
 
 .wrap-up-lead {
-  margin-bottom: var(--space-2);
+  margin: var(--space-4) 0 var(--space-2);
   color: var(--text-mid);
   font-size: var(--text-subtitle-size);
   line-height: var(--text-subtitle-line);
@@ -149,7 +194,8 @@
   border-top: 1px solid var(--border-default);
 }
 
-.cone-toggles h3 {
+.cone-toggles h3,
+.finish-block h3 {
   font-family: var(--font-heading);
   font-size: var(--text-body-size);
   font-weight: 600;
@@ -164,4 +210,24 @@
 .cone-toggles__list {
   display: flex;
   flex-direction: column;
+}
+
+.finish-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}
+
+.finish-note {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  color: var(--text-mid);
+}
+
+@media (max-width: 640px) {
+  .active-actions {
+    flex-direction: column;
+  }
 }

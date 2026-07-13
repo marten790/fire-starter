@@ -4,7 +4,7 @@
 
 ## What we're building
 
-A **kiln firing dashboard** for **Delores** — a manual (dial 1–6) front-loading electric pottery kiln. Primary device: **iPad Pro 11" (3rd gen)**. Design source: **Figma design system**.
+A **kiln firing dashboard** for **Delores** — a manual (dial 1–6) front-loading electric pottery kiln. Primary device: **iPad Pro 11" (3rd gen)**. App name: **Firestarter**. Design source: **Figma Product Template**.
 
 Two firing types:
 1. **Bisque** — Cone 06, ~7–8 hrs, peak ~893°C, candling + door ajar first hour, **no soak**
