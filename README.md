@@ -1,17 +1,22 @@
-# Fire Starter
+# Firestarter
 
-A kiln firing dashboard for manual pottery kilns — built for iPad, designed from your Figma design system.
+Kiln firing dashboard for **Delores** (manual electric pottery kiln) — built for **iPad**, designed from Figma.
 
 ## Status
 
-**Live on iPad-ready hosting:** https://fire-starter-ten.vercel.app
+**Live:** https://fire-starter-ten.vercel.app  
+
+See **[PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md)** for what’s built, backlog, decisions, and data storage notes.
 
 ## Use on iPad (Safari)
 
 1. Open https://fire-starter-ten.vercel.app in **Safari**
 2. Tap **Share** → **Add to Home Screen** → **Add**
-3. Open **Fire Starter** from your home screen
-4. Join garage Wi‑Fi when firing — Delores itself does not need Wi‑Fi
+3. Open **Firestarter** from the Home Screen
+4. Allow **notifications** when prompted (for check reminders with sound)
+5. Join garage Wi‑Fi when firing — Delores itself does not need Wi‑Fi
+
+**Tip:** After an app update, pull to refresh in Safari once if the Home Screen icon looks outdated. Your firings stay on the iPad unless you clear website data — use **Export** for a WhatsApp/Files backup.
 
 ## Run locally
 
@@ -22,36 +27,25 @@ npm run dev
 
 Open the URL it prints (usually `http://localhost:5173`).
 
-### Windows PowerShell error (“running scripts is disabled”)
+### Windows PowerShell (“running scripts is disabled”)
 
-If you see:
+Use `npm.cmd run dev`, double-click `dev.cmd`, or:
 
-> `npm.ps1 cannot be loaded because running scripts is disabled`
-
-Use either:
-
-1. **Double-click** `dev.cmd` in this folder, or in the terminal run:
-   ```bash
-   npm.cmd run dev
-   ```
-2. Or fix PowerShell once (recommended), then open a **new** terminal:
-   ```powershell
-   Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-   ```
-
-Then `npm run dev` will work normally.
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
 
 ## Docs
 
 | Document | Purpose |
 |----------|---------|
-| [PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md) | Progress tracker and decisions |
-| [INSTRUCTIONS.md](./INSTRUCTIONS.md) | Commit/push workflow and how we collaborate |
-| [docs/OVERVIEW.md](./docs/OVERVIEW.md) | Project summary |
+| [PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md) | **Source of truth** — status, features, decisions, backlog |
+| [INSTRUCTIONS.md](./INSTRUCTIONS.md) | Commit/push/deploy + keep docs updated |
+| [docs/OVERVIEW.md](./docs/OVERVIEW.md) | Short project summary |
 | [docs/DESIGN_TOKENS.md](./docs/DESIGN_TOKENS.md) | Figma → CSS tokens |
-| [docs/REQUIREMENTS_QUESTIONS.md](./docs/REQUIREMENTS_QUESTIONS.md) | Discovery questions (answered) |
+| [docs/REQUIREMENTS_QUESTIONS.md](./docs/REQUIREMENTS_QUESTIONS.md) | Discovery questions |
 | [docs/FIRING_RESEARCH.md](./docs/FIRING_RESEARCH.md) | What to track during firings |
-| [docs/TECH_RECOMMENDATIONS.md](./docs/TECH_RECOMMENDATIONS.md) | iPad / PWA vs native |
+| [docs/TECH_RECOMMENDATIONS.md](./docs/TECH_RECOMMENDATIONS.md) | PWA vs native |
 | [docs/CURSOR_GETTING_STARTED.md](./docs/CURSOR_GETTING_STARTED.md) | First-time Cursor guide |
 
 ## Repository

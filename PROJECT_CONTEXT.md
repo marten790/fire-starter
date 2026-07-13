@@ -1,51 +1,194 @@
-# Fire Starter — Project Context
+# Firestarter — Project Context
 
 > **Living document.** Updated as we build. This is the single source of truth for where the project stands.
 
 ## What we're building
 
-A **kiln firing dashboard** for **Delores** — a manual (dial 1–6) front-loading electric pottery kiln. Primary device: **iPad Pro 11" (3rd gen)**. App name: **Firestarter**. Design source: **Figma Product Template**.
+A **kiln firing dashboard** for **Delores** — a manual (dial 1–6) front-loading electric pottery kiln. Primary device: **iPad Pro 11" (3rd gen)**.
+
+- **App name:** Firestarter  
+- **Live URL:** https://fire-starter-ten.vercel.app  
+- **Repo:** https://github.com/marten790/fire-starter  
+- **Design:** [Product Template (Copy)](https://www.figma.com/design/w9ZZXytE6QPLmN0DGpGUyn/Product-Template--Copy-?node-id=1-10&m=dev) + Inkblot tokens from Design System 2.0  
 
 Two firing types:
 1. **Bisque** — Cone 06, ~7–8 hrs, peak ~893°C, candling + door ajar first hour, **no soak**
-2. **Glaze** — Cone 6 or 7, ~9–10 hrs, peak ~1072°C, **30 min soak** when cone 6 starts bending
+2. **Glaze** — Cone 6 / 7, ~9–10 hrs, peak ~1072°C, **30 min soak** when cone 6 starts bending
 
-Tracking today: paper log sheets + Orton cones + external thermocouple meter (°C). App replaces the paper log and adds graphs, reminders, and history.
+Tracking today: paper log sheets + Orton cones + external thermocouple meter (°C). The app replaces the paper log and adds graphs, reminders, history, and export.
 
 ## Project status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Discovery & requirements | **Complete** | All open questions answered |
-| Design (Figma → tokens) | **Done (v1)** | Tokens in `src/styles/tokens.css` + `docs/DESIGN_TOKENS.md` |
-| Tech setup | **Deployed** | https://fire-starter-ten.vercel.app |
-| MVP build | **In progress** | Dashboard + log + graph + history + reminders + pre-start checklist |
-| iPad testing | **Ready** | Safari → Add to Home Screen |
+| Discovery & requirements | **Complete** | Answers recorded below |
+| Design (Figma → UI) | **In use** | Product Template UI + tokens in `src/styles/tokens.css` |
+| Tech setup | **Deployed** | Vite + React + TS + PWA on Vercel |
+| MVP build | **Strong progress** | See “What’s built” |
+| iPad testing | **Active** | Safari → Add to Home Screen |
 
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-13
+
+## What’s built (current product)
+
+### Navigation & chrome
+- Brand: **Firestarter** + kiln mark
+- Bottom nav: **Dashboard** · **History** (Settings / Help deferred)
+- Light theme, iPad-width shell (~834px)
+
+### Dashboard
+- Current firing card (timer, last/peak/logs, next check, open / delete)
+- Empty state when no fire is running
+- Start **bisque** / **glaze** cards → pre-start checklist → timer starts
+- **Export** card: CSV (readings) + full JSON backup (share via WhatsApp / Files)
+
+### Pre-start checklist
+- Must check all items (or **Select all** / **Clear all**) before Start firing
+- **Bisque order:** Kiln loaded → Cone 06 placed → Meter connected → Peephole open → Door ajar for candling → Dial on 1 → Power ON
+- **Glaze:** same flow with glaze cone / door wording
+- Snapshot saved on the firing
+
+### Active firing
+- Session card: type, date name, large timer, status pill, cone target, started time, last reading
+- Temperature graph (°C vs elapsed time)
+- Log reading: dial 1–6 (half steps), °C, kWh, notes
+- **Cone events (toggles):**
+  - Bisque: 07 / 06 started & down
+  - Glaze: **5 and 6 only** (started & down); cone 6 hints for soak / target
+- **Bisque · Candling:** countdown to close door (1h), peephole close ~100°C, toggles, alerts + chime
+- Check reminders: 15 / 30 / 60 min (bisque defaults to 15 on start)
+- End firing → cooling; delete firing
+- Heating log: **single-line** rows + small **Delete** (with confirm); graph updates
+
+### Reminders / notifications
+- Interval reminders while status is `running`
+- In-app alert + louder chime + vibrate when available
+- Browser / service-worker **notification with system sound** when permission granted
+- Screen **wake lock** while a firing + reminders are active (helps timers stay alive)
+- Logging a reading resets the next reminder
+- **Limit:** true push with iPad fully locked still needs a backend push service; best with Home Screen app + screen on / app open
+
+### Cooling & results
+- End-of-fire: soak start/end, switch off, top temp
+- Cooling log: 1h / 2h / 4h / 8h
+- Results: cone bottom / mid / top, clay & glaze outcome, defects, adjustments
+- Done → dashboard; delete firing
+
+### History
+- Separate History tab
+- Filter by type + date; Export CSV in toolbar
+- Rows with peak temp badge, name, meta, View details, compact Delete
+
+### Data & persistence
+- **Browser `localStorage` on the device** (not on Vercel)
+  - `fire-starter.firings.v1` — firings
+  - `fire-starter-reminders` — reminder settings
+  - `fire-starter.deleted-paper.v1` — deleted paper-import ids
+- App **deploys do not wipe** local data
+- Data is lost if Safari site data is cleared, private mode, or a different device/browser
+- **Export CSV / JSON** before risky clears; paper logs seeded into history (8 imports)
+
+### Deploy workflow
+- Commit + push to `main` → GitHub
+- `npx vercel --prod` (or GitHub → Vercel) → https://fire-starter-ten.vercel.app
+- After iPad cache issues: refresh Safari, then reopen Home Screen app
 
 ## Decisions made
 
 | Decision | Choice | Date | Rationale |
 |----------|--------|------|-----------|
-| App name | **Fire Starter** | 2026-07-10 | Confirmed by designer |
-| Platform | Web app / PWA | 2026-07-10 | iPad-first; no App Store needed for v1 |
-| Offline | Required for MVP | 2026-07-10 | Garage kiln; no Wi‑Fi/Bluetooth on kiln |
-| Theme | **Light UI** | 2026-07-10 | Designer preference for garage use |
-| Units | °C + **kWh** on readings | 2026-07-10 | Thermocouple meter; matches paper sheets |
-| Dial | 1–6 (allow half steps e.g. 3/4) | 2026-07-10 | Matches kiln + paper logs |
+| App name | **Firestarter** | 2026-07-13 | Confirmed (was “Fire Starter”) |
+| Platform | Web app / PWA | 2026-07-10 | iPad-first; no App Store for v1 |
+| Offline / storage | **localStorage** | 2026-07-10 | Garage; kiln not networked |
+| Theme | **Light UI** | 2026-07-10 | Garage use |
+| Units | °C + **kWh** | 2026-07-10 | Meter + paper sheets |
+| Dial | 1–6 (half steps) | 2026-07-10 | Matches kiln |
 | Firing names | Date-based | 2026-07-10 | User preference |
-| Kiln name | Delores | 2026-07-10 | From existing paper logs |
-| Design system | [Design System 2.0 (Copy)](https://www.figma.com/design/1n1CyxHO40140szSX27TCQ/Design-System-2.0--Copy-?node-id=0-1&m=dev) | 2026-07-10 | Figma source of truth |
+| Kiln name | Delores | 2026-07-10 | Paper logs |
+| UI design | [Product Template](https://www.figma.com/design/w9ZZXytE6QPLmN0DGpGUyn/Product-Template--Copy-?node-id=1-10&m=dev) | 2026-07-13 | High-fidelity screens |
+| Tokens | Inkblot / Design System 2.0 | 2026-07-10 | Colors, type, spacing |
+| Nav (v1) | Dashboard + History only | 2026-07-13 | Settings / Help later |
+| Glaze cone toggles | **5 & 6 only** | 2026-07-13 | User request |
+| Bisque checklist order | Loaded → cone → meter → peephole → door → dial 1 → power | 2026-07-13 | User request |
+| Export | CSV + JSON backup | 2026-07-11 | WhatsApp / safety copy |
 | Repo | [marten790/fire-starter](https://github.com/marten790/fire-starter) | 2026-07-10 | — |
 
-## Open questions (remaining)
+## Feature backlog (prioritized)
 
-None for discovery. Next: connect Figma Desktop MCP and extract tokens, then scaffold the app.
+### MVP remaining
+- [ ] Glaze soak controls (dedicated 30 min timer when cone 6 starts)
+- [ ] Element firing counter (~7 so far; alert threshold later)
+- [ ] Photos on results
+- [ ] Outcome rating UI polish (if not fully exposed)
+
+### Done (MVP)
+- [x] Dashboard start bisque / glaze
+- [x] Pre-start checklist (+ select all)
+- [x] Active log (dial + °C + kWh + notes) + delete reading
+- [x] Reminders 15/30/60 + notification sound (best-effort)
+- [x] Bisque candling helpers
+- [x] Cone events (bisque 07/06; glaze 5/6)
+- [x] Cooling log + results
+- [x] History filters + export
+- [x] Temp vs time graph
+- [x] localStorage offline storage
+- [x] Figma Product Template redesign pass
+
+### Next
+- [ ] Compare two firings (overlay graphs)
+- [ ] Show “adjustments from last firing” on new start
+- [ ] Settings / Help tabs
+- [ ] Glaze / clay library
+- [ ] PDF export
+- [ ] Multi-user / multi-kiln
+- [ ] True push when iPad locked (needs push server)
+- [ ] Orton cone reference chart in-app
+- [ ] Import JSON backup into the app
+
+## Tech stack
+
+| Layer | Choice |
+|-------|--------|
+| UI | React + TypeScript (Vite) |
+| Styling | CSS variables (`tokens.css`) + screen CSS |
+| Data | localStorage (firings + reminders) |
+| PWA | vite-plugin-pwa (Add to Home Screen) |
+| Deploy | Vercel production alias `fire-starter-ten.vercel.app` |
+| Target | iPad Pro 11" Safari / Home Screen |
+
+## File map
+
+```
+fire-starter/
+├── PROJECT_CONTEXT.md          ← this file (source of truth)
+├── INSTRUCTIONS.md             ← how we work + always update docs
+├── README.md
+├── package.json
+├── vite.config.ts
+├── vercel.json
+├── src/
+│   ├── App.tsx                 ← screens, reminders, nav
+│   ├── styles/tokens.css
+│   ├── types/firing.ts
+│   ├── lib/
+│   │   ├── firings.ts          ← load/save, create, complete
+│   │   ├── checklist.ts        ← pre-start items
+│   │   ├── candling.ts         ← bisque door / peephole helpers
+│   │   ├── reminders.ts        ← intervals, notifications, wake lock
+│   │   └── exportData.ts       ← CSV + JSON export
+│   ├── data/paperFirings.ts    ← imported paper logs
+│   ├── screens/
+│   │   ├── DashboardScreen.tsx
+│   │   ├── HistoryScreen.tsx
+│   │   └── ActiveFiringScreen.tsx
+│   └── components/             ← BrandMark, BottomNav, forms, etc.
+├── public/
+└── docs/
+```
 
 ---
 
-## Answers (from designer)
+## Answers (from designer) — discovery archive
 
 ### About you & your kiln
 
@@ -54,186 +197,35 @@ None for discovery. Next: connect Figma Desktop MCP and extract tokens, then sca
 | 1 | Make/model unknown |
 | 2 | Front-loading; chamber **48 × 53 × 68 cm** |
 | 3 | Electric |
-| 4 | **New elements** (~7 firings so far); known cold spot at bottom (extra shelf helps) |
+| 4 | **New elements** (~7 firings so far); cold spot at bottom |
 | 5 | External meter via **thermocouple**, **°C** |
-| 6 | **Orton** — bisque **06**, glaze **6 or 7** (large cones / LRB) |
-| 7 | Garage; fully manual kiln — **no Wi‑Fi or Bluetooth** at kiln |
+| 6 | **Orton** — bisque **06**, glaze **6 or 7** |
+| 7 | Garage; kiln has **no Wi‑Fi/Bluetooth** |
 | 8 | **iPad Pro 11" (3rd generation)** |
 
-### Bisque firing workflow
+### Bisque / glaze (summary)
 
-| # | Answer |
-|---|--------|
-| 9 | Cone **06**; peak on meter ~**893°C** |
-| 10 | **7–8 hours** |
-| 11 | Start slower; **candling** upfront for moisture; **no soak** on bisque |
-| 12 | Check every **15–30 minutes** |
-| 13 | Peephole open + **door ajar first hour**; close peephole once kiln reaches **100°C** |
-| 14 | Shut off when **cone has bent over** |
-| 15 | Open kiln once cooled to **150°C** |
-| 16 | Some cracking — may be making-related |
+- Bisque: candle, door ajar first hour, close peephole ~100°C, no soak, ~7–8h, ~893°C  
+- Glaze: soak 30 min when cone 6 starts, ~9–10h, ~1072°C; cones historically 5 / 5-6-7 / 7 (app toggles currently **5 & 6** only)  
+- Open kiln when cooled to **≤ 150°C**
 
-### Glaze firing workflow
+Full Q&A tables remain in `docs/REQUIREMENTS_QUESTIONS.md` and earlier session notes.
 
-| # | Answer |
-|---|--------|
-| 17 | Cone **6 or 7**; peak on meter ~**1072°C** |
-| 18 | **9–10 hours** |
-| 19 | **30 min soak** on glaze only |
-| 20 | Cones: **5** bottom; **5, 6, 7** middle (peephole view); **7** top |
-| 21 | Many glazes, same clay bodies; firings named by **date** |
-| 22 | When **cone 6 starts bending** → start soak |
-| 23 | **Natural** cool; no temp hold on cool-down |
-| 24 | Some pinholes; no major problems |
+### Paper log blueprint
 
-### Dashboard must-haves (MVP)
+Heating log · peak/soak · cooling 1/2/4/8h · results (bottom/mid/top cones, outcomes, adjustments). See also `docs/FIRING_RESEARCH.md`.
 
-| # | Answer |
-|---|--------|
-| 25 | Separate start for bisque vs glaze |
-| 26 | Elapsed timer — yes |
-| 27 | Big temp entry + show last reading — yes |
-| 28 | Dial **1–6** |
-| 29 | Quick notes / presets — yes; **no voice** |
-| 30 | Reminders every **30–60 min** — yes |
-| 31 | Pre-start checklist — yes |
-| 32 | Cone results: **per shelf + overall** |
-| 33 | Photos — yes |
-| 34 | Peak temp (auto from logs + editable) — yes |
-| 35 | Outcome rating — yes |
-| 36 | Load record (count / notes / shelf) — yes |
-| 37 | History: filter bisque/glaze + search by date — yes |
-| 38 | Compare two firings — yes |
-| 39 | Copy last firing — **no** |
-| 40 | Element / maintenance counter — yes |
+## Working rules (for the assistant)
 
-### Nice-to-haves (post-MVP or soon after)
-
-| # | Answer |
-|---|--------|
-| 41 | Clay & glaze library — yes |
-| 42 | Export PDF — yes |
-| 43 | Multiple kilns later — yes |
-| 44 | Shared access (others) — yes |
-| 45 | Weather / season notes — yes |
-| 46 | Locked-iPad notifications — yes |
-| 53 | **Graphs** of firing data + compare firings — yes (priority) |
-
-### Design & success
-
-| # | Answer |
-|---|--------|
-| 47 | Figma Desktop MCP: `http://127.0.0.1:3845/mcp` + file [Design System 2.0 (Copy)](https://www.figma.com/design/1n1CyxHO40140szSX27TCQ/Design-System-2.0--Copy-?node-id=0-1&m=dev) |
-| 48 | **Light UI** |
-| 49 / name | **Fire Starter** |
-| 50 | Use design system from Figma |
-| 51 | Success: useful enough to keep using |
-| 52 | Biggest pain today: **memory** (paper + remembering) |
-| kWh | **Yes** — log electric units on readings (like paper sheets) |
-
----
-
-## Insights from paper log sheets (photos)
-
-Your current sheets are the best blueprint for the app. Digital MVP should mirror this structure:
-
-### Heating log (per row)
-- Elapsed time (auto-calculated from start)
-- Clock time
-- Dial setting (1–6, including half steps like 3/4, 5/4)
-- Thermocouple °C
-- Electric units **kWh** (used on glaze logs)
-- Witness cone notes
-- Notes (e.g. OPEN DOOR, CLOSE DOOR, COLDER DAY)
-
-### Peak / soak block
-- Top temp
-- Soak start (time + temp + dial)
-- Soak end (time + temp)
-- Switch off time
-- Live cone events: e.g. “cone 4 started / down” with time + °C
-
-### Cooling log
-- Checkpoints: **1h, 2h, 4h, 8h** after off (time + °C + notes)
-- Open kiln rule: **≤ 150°C**
-
-### Results
-- Final witness cones: **bottom / mid / top**
-- Clay body outcome
-- Glaze outcome
-- Defects / notes
-- **Adjustments for next firing** (show this when starting the next fire of same type)
-- General notes / how full the kiln was
-
-### Reference assets from photos
-- Orton cone chart (°C / °F by heating rate) — good in-app reference later
-- Three side peepholes on kiln (bottom / mid / top)
-- Wall isolator switch (manual power) — checklist item: “power ON”
-
----
-
-## Feature backlog (prioritized)
-
-### MVP — replace the paper log on iPad
-- [x] Home: Start **Bisque** or **Glaze** (kiln: Delores)
-- [x] Pre-start checklist (cones placed, door ajar, peephole open, power on, meter connected…)
-- [x] Active firing screen: elapsed timer, last temp, big “Log reading” (dial + °C + **kWh** + note)
-- [x] Reminder every 15 / 30 / 60 min while firing is active (in-app + browser Notification when allowed)
-- [x] Candling helpers: door ajar / close at 100°C prompts (bisque section + check reminders)
-- [x] Cone event log during fire (started / down + time + temp)
-- [ ] Glaze soak controls (start soak when cone 6 starts; 30 min timer)
-- [x] Switch off + cooling log (1 / 2 / 4 / 8 h)
-- [x] Results: bottom/mid/top cones, outcomes, defects, adjustments, rating (photos later)
-- [x] History list (filter type, search date)
-- [x] Simple **temp vs time graph** for one firing
-- [ ] Element firing counter (~7 so far; alert threshold later)
-- [x] Offline-capable storage (garage — localStorage)
-
-### Next
-- [ ] Compare two firings (overlay graphs)
-- [ ] Show “adjustments from last firing” on new start
-- [ ] Glaze / clay library
-- [ ] PDF export
-- [ ] Multi-user / multi-kiln
-- [ ] Push notifications when iPad locked
-- [ ] Orton cone temperature reference chart in-app
-
-## Tech stack (tentative)
-
-| Layer | Likely choice |
-|-------|----------------|
-| UI | React + Figma design tokens |
-| Styling | CSS variables / Tailwind from design system |
-| Data | Local-first (IndexedDB); sync later if shared access needed |
-| Deploy | PWA; Add to Home Screen on iPad |
-| Target | iPad Pro 11" Safari |
-
-## File map
-
-```
-fire-starter/
-├── PROJECT_CONTEXT.md
-├── INSTRUCTIONS.md
-├── README.md
-├── package.json
-├── src/
-│   ├── styles/tokens.css     ← Figma design tokens
-│   ├── screens/              ← Home + Active firing
-│   └── components/Button.tsx
-├── public/
-└── docs/
-    ├── DESIGN_TOKENS.md
-    ├── OVERVIEW.md
-    └── …
-```
+1. After meaningful product changes: **update `PROJECT_CONTEXT.md`** (and README if user-facing).
+2. **Commit and push** to GitHub; **deploy to Vercel** when shipping for iPad.
+3. Prefer small, testable steps; keep light UI and Delores/kiln facts accurate.
+4. Do not invent kiln behavior that contradicts discovery answers without asking.
 
 ## Session log
 
 | Date | What we did |
 |------|-------------|
-| 2026-07-10 | Created project docs, research, discovery questions; initialized repo |
-| 2026-07-10 | Recorded full requirements answers + paper log / kiln photo insights; drafted MVP backlog |
-| 2026-07-10 | Locked theme (light), kWh logging, and Figma Design System 2.0 link; discovery complete |
-| 2026-07-10 | Pulled Inkblot tokens from Figma; scaffolded Vite/React PWA with home + active log screens |
-| 2026-07-10 | Imported 8 paper kiln log sheets into History (heating, cooling, results) |
-| 2026-07-10 | Deployed to Vercel; added end-of-fire soak/cooling/results + cone events |
+| 2026-07-10 | Docs, discovery, tokens, Vite PWA, paper import, Vercel, end-of-fire, cones |
+| 2026-07-11 | Reminders; CSV/JSON export; export at top of dashboard |
+| 2026-07-13 | Figma Product Template redesign (Firestarter, Dashboard/History nav); delete heat log; checklist order; glaze cones 5/6; notification sound + wake lock; compact delete; single-line heat log; remove loaded-by meta; checklist select all; **docs refresh** |
