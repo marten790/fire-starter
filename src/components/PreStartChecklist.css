@@ -20,11 +20,30 @@
   line-height: var(--text-subtitle-line);
 }
 
+.prestart-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
 .prestart-progress {
   margin: 0;
   font-size: var(--text-caption-size);
   font-weight: 600;
   color: var(--text-high);
+}
+
+.prestart-select-all {
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-body-size);
+  font-weight: 600;
+  min-height: var(--tap-min);
+  padding: 0;
+  cursor: pointer;
 }
 
 .prestart-list {

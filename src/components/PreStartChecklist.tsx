@@ -42,6 +42,12 @@ export function PreStartChecklist({ open, type, onCancel, onConfirm }: Props) {
     setChecked((prev) => ({ ...prev, [key]: on }))
   }
 
+  function selectAll(on: boolean) {
+    const next: Record<string, boolean> = {}
+    for (const item of defs) next[item.key] = on
+    setChecked(next)
+  }
+
   function confirm() {
     if (!allDone) return
     onConfirm(
@@ -73,9 +79,18 @@ export function PreStartChecklist({ open, type, onCancel, onConfirm }: Props) {
         <p id="prestart-lead" className="prestart-lead">
           Check each item at the kiln. Timer starts when everything is ready.
         </p>
-        <p className="prestart-progress" aria-live="polite">
-          {doneCount} of {defs.length} ready
-        </p>
+        <div className="prestart-toolbar">
+          <p className="prestart-progress" aria-live="polite">
+            {doneCount} of {defs.length} ready
+          </p>
+          <button
+            type="button"
+            className="prestart-select-all"
+            onClick={() => selectAll(!allDone)}
+          >
+            {allDone ? 'Clear all' : 'Select all'}
+          </button>
+        </div>
 
         <div className="prestart-list">
           {defs.map((item) => (
