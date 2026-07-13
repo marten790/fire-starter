@@ -5,17 +5,6 @@
   gap: var(--space-4);
 }
 
-.firing-details__meta {
-  padding: var(--space-3);
-  background: var(--color-primary-100);
-  border-radius: var(--radius-md);
-  font-size: var(--text-body-size);
-  color: var(--text-high);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
 .firing-details__block {
   padding: var(--space-4);
   background: var(--surface-background);

@@ -28,11 +28,9 @@ export function FiringDetails({ firing }: Props) {
 
   return (
     <section className="firing-details" aria-label="Firing details from log sheet">
-      {(firing.loadedBy || firing.coneTarget || firing.weatherNote) && (
-        <div className="firing-details__meta">
-          {firing.loadedBy && <p>Loaded by: {firing.loadedBy}</p>}
-          {firing.coneTarget && <p>Cone target: {firing.coneTarget}</p>}
-          {firing.weatherNote && <p>Note: {firing.weatherNote}</p>}
+      {firing.weatherNote && (
+        <div className="firing-details__block">
+          <p>Note: {firing.weatherNote}</p>
         </div>
       )}
 
