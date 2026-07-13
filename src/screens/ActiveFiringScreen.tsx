@@ -40,14 +40,10 @@ function coneTogglesFor(type: FiringType): ConeToggleDef[] {
     ]
   }
   return [
-    { key: '4-started', label: 'Cone 4 started' },
-    { key: '4-down', label: 'Cone 4 down' },
     { key: '5-started', label: 'Cone 5 started' },
     { key: '5-down', label: 'Cone 5 down' },
     { key: '6-started', label: 'Cone 6 started', hint: 'Begin soak' },
-    { key: '6-down', label: 'Cone 6 down' },
-    { key: '7-started', label: 'Cone 7 started' },
-    { key: '7-down', label: 'Cone 7 down', hint: 'Guard cone' },
+    { key: '6-down', label: 'Cone 6 down', hint: 'Target — shut off when bent' },
   ]
 }
 
