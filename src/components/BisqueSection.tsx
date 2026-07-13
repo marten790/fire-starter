@@ -12,6 +12,7 @@ import {
 } from '../lib/candling'
 import { nowClock } from '../lib/firings'
 import {
+  buzzDevice,
   playReminderChime,
   showBrowserNotification,
   type ReminderSettings,
@@ -62,7 +63,8 @@ export function BisqueSection({
     doorAlerted.current = true
     setDoorPromptOpen(true)
     playReminderChime()
-    showBrowserNotification(
+    buzzDevice()
+    void showBrowserNotification(
       'Close the kiln door',
       `Candling hour is up — close Delores’s door.`,
     )
@@ -78,7 +80,8 @@ export function BisqueSection({
     peepholeAlerted.current = true
     setPeepholePromptOpen(true)
     playReminderChime()
-    showBrowserNotification(
+    buzzDevice()
+    void showBrowserNotification(
       'Close the peephole',
       `Kiln is at ${lastTempC}°C — close the peephole.`,
     )
@@ -239,7 +242,7 @@ export function BisqueSection({
         settings={reminders}
         onChange={onRemindersChange}
         title="Bisque check reminders"
-        hint="During bisque, peek every 15–30 minutes. Keep Fire Starter open for the most reliable nudges."
+        hint="Sends a notification with sound when it’s time to check. Allow notifications, keep Firestarter on the Home Screen, and leave the screen on for the most reliable alerts."
       />
     </section>
   )

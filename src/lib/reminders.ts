@@ -83,35 +83,59 @@ export async function ensureNotificationPermission(): Promise<NotificationPermis
   }
 }
 
-export function showBrowserNotification(title: string, body: string) {
+/** System / push-style notification with sound (silent: false). Prefers the service worker. */
+export async function showBrowserNotification(title: string, body: string) {
   if (typeof Notification === 'undefined') return
   if (Notification.permission !== 'granted') return
+
+  const options: NotificationOptions = {
+    body,
+    icon: '/pwa-192.png',
+    badge: '/pwa-192.png',
+    tag: 'firestarter-reminder',
+    requireInteraction: true,
+    silent: false,
+    // @ts-expect-error vibrate is widely supported but missing in some TS libs
+    vibrate: [220, 100, 220, 100, 440],
+    data: { url: '/' },
+  }
+
   try {
-    const n = new Notification(title, {
-      body,
-      tag: 'fire-starter-reminder',
-    })
-    window.setTimeout(() => n.close(), 12_000)
+    const reg = await navigator.serviceWorker?.ready
+    if (reg?.showNotification) {
+      await reg.showNotification(title, options)
+      return
+    }
+  } catch {
+    // fall through to page Notification
+  }
+
+  try {
+    const n = new Notification(title, options)
+    window.setTimeout(() => n.close(), 20_000)
   } catch {
     // iOS / locked-down browsers may reject Notification construction
   }
 }
 
-/** Soft two-tone chime when the app is open */
+/** Louder multi-tone chime when the app is in the foreground */
 export function playReminderChime() {
   try {
-    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    const Ctx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     if (!Ctx) return
     const ctx = new Ctx()
+    if (ctx.state === 'suspended') void ctx.resume()
     const now = ctx.currentTime
 
-    function tone(freq: number, start: number, dur: number) {
+    function tone(freq: number, start: number, dur: number, volume = 0.22) {
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
-      osc.type = 'sine'
+      osc.type = 'triangle'
       osc.frequency.value = freq
       gain.gain.setValueAtTime(0.0001, start)
-      gain.gain.exponentialRampToValueAtTime(0.12, start + 0.02)
+      gain.gain.exponentialRampToValueAtTime(volume, start + 0.03)
       gain.gain.exponentialRampToValueAtTime(0.0001, start + dur)
       osc.connect(gain)
       gain.connect(ctx.destination)
@@ -119,12 +143,46 @@ export function playReminderChime() {
       osc.stop(start + dur + 0.05)
     }
 
-    tone(660, now, 0.18)
-    tone(880, now + 0.22, 0.28)
-    window.setTimeout(() => void ctx.close(), 800)
+    tone(587, now, 0.2, 0.2)
+    tone(784, now + 0.2, 0.22, 0.24)
+    tone(988, now + 0.42, 0.35, 0.28)
+    window.setTimeout(() => void ctx.close(), 1200)
   } catch {
     // Audio may be blocked until a user gesture
   }
+}
+
+export function buzzDevice() {
+  try {
+    navigator.vibrate?.([220, 100, 220, 100, 440])
+  } catch {
+    // ignore
+  }
+}
+
+/** Keep the iPad awake during a firing so reminder timers can fire. */
+let wakeLock: WakeLockSentinel | null = null
+
+export async function requestFiringWakeLock() {
+  if (!('wakeLock' in navigator)) return false
+  try {
+    wakeLock = await navigator.wakeLock.request('screen')
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
+export async function releaseFiringWakeLock() {
+  try {
+    await wakeLock?.release()
+  } catch {
+    // ignore
+  }
+  wakeLock = null
 }
 
 export function formatReminderCountdown(nextDueAt: number | null, now = Date.now()): string {

@@ -20,7 +20,7 @@ export function ReminderControls({
   settings,
   onChange,
   title = 'Check reminders',
-  hint = 'Nudge you to peek at the kiln while a firing is running. Keep Fire Starter open (or on the Home Screen) for the most reliable alerts.',
+  hint = 'Sends a notification with sound when it’s time to check the kiln. Add Firestarter to your Home Screen and allow notifications. Keep the app open (or the screen awake) for the most reliable alerts.',
 }: Props) {
   const [now, setNow] = useState(Date.now())
   const [permNote, setPermNote] = useState<string | null>(null)
@@ -35,13 +35,15 @@ export function ReminderControls({
     if (on) {
       const perm = await ensureNotificationPermission()
       if (perm === 'denied') {
-        setPermNote('Browser alerts blocked — in-app reminders still work while Fire Starter is open.')
+        setPermNote(
+          'Notifications blocked in Settings — in-app chime still works while Firestarter is open.',
+        )
       } else if (perm === 'granted') {
-        setPermNote('Browser alerts on when the iPad allows them.')
+        setPermNote('Notifications on — you’ll get an alert with sound when a check is due.')
       } else if (perm === 'unsupported') {
-        setPermNote('In-app reminders only on this browser.')
+        setPermNote('This browser can’t show notifications — in-app chime only.')
       } else {
-        setPermNote(null)
+        setPermNote('Allow notifications when prompted so alerts can sound in the background.')
       }
     } else {
       setPermNote(null)

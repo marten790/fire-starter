@@ -11,9 +11,13 @@ import {
   saveFirings,
 } from './lib/firings'
 import {
+  buzzDevice,
   clearReminderSchedule,
+  ensureNotificationPermission,
   loadReminderSettings,
   playReminderChime,
+  releaseFiringWakeLock,
+  requestFiringWakeLock,
   saveReminderSettings,
   scheduleNextReminder,
   showBrowserNotification,
@@ -79,23 +83,44 @@ export default function App() {
       return
     }
 
-    function check() {
+    function fireReminder() {
       if (!reminders.nextDueAt) return
       if (Date.now() < reminders.nextDueAt) return
       if (alertedForDueAt.current === reminders.nextDueAt) return
       alertedForDueAt.current = reminders.nextDueAt
       setReminderOpen(true)
       playReminderChime()
-      showBrowserNotification(
+      buzzDevice()
+      void showBrowserNotification(
         'Time to check Delores',
-        `Firestarter · ${reminders.intervalMinutes} min reminder`,
+        `Firestarter · ${reminders.intervalMinutes} min kiln check`,
       )
     }
 
-    check()
-    const id = window.setInterval(check, 1000)
+    fireReminder()
+    const id = window.setInterval(fireReminder, 1000)
     return () => window.clearInterval(id)
   }, [running, reminders.enabled, reminders.nextDueAt, reminders.intervalMinutes])
+
+  useEffect(() => {
+    if (!running || !reminders.enabled) {
+      void releaseFiringWakeLock()
+      return
+    }
+    void ensureNotificationPermission()
+    void requestFiringWakeLock()
+
+    function onVisibility() {
+      if (document.visibilityState === 'visible') {
+        void requestFiringWakeLock()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      void releaseFiringWakeLock()
+    }
+  }, [running, reminders.enabled])
 
   function updateReminders(next: ReminderSettings) {
     setReminders(next)
@@ -138,6 +163,7 @@ export default function App() {
     if (getRunningFiring(firings)) return
     const next = createFiring(type, { preStartChecklist: checklist })
     setFirings((prev) => [next, ...prev])
+    void ensureNotificationPermission()
     setReminders((prev) => {
       const withInterval =
         type === 'bisque' ? { ...prev, intervalMinutes: 15 as const } : prev
