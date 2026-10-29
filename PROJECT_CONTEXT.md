@@ -53,7 +53,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 - Temperature graph (°C vs elapsed time)
 - Log reading: dial **1–6 only** (half steps), °C, kWh; notes sit at the bottom of the section, then Log reading / Save & leave
 - **Cone events (toggles):**
-  - Bisque: 07 / 06 started & down
+  - Bisque: 07 / 06 **down** only
   - Glaze: **5 and 6 only** (started & down); cone 6 hints for soak / target
 - **Bisque · Candling:** inside **Log a reading**; countdown to close door (1h), peephole close ~100°C, toggles, alerts + chime. **Log reading / Save & leave** at the bottom of that section
 - Check reminders: **own section** — 15 / 30 / 60 min (bisque defaults to 15 on start; title “Bisque check reminders”)
@@ -128,7 +128,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 - [x] Active log (dial + °C + kWh + notes) + delete reading
 - [x] Reminders 15/30/60 + notification sound (best-effort)
 - [x] Bisque candling helpers
-- [x] Cone events (bisque 07/06; glaze 5/6)
+- [x] Cone events (bisque 07/06 down; glaze 5/6 started & down)
 - [x] Cooling log + results
 - [x] History filters + export
 - [x] Import CSV / JSON backup into History
@@ -232,4 +232,4 @@ Heating log · peak/soak · cooling 1/2/4/8h · results (bottom/mid/top cones, o
 | 2026-07-10 | Docs, discovery, tokens, Vite PWA, paper import, Vercel, end-of-fire, cones |
 | 2026-07-11 | Reminders; CSV/JSON export; export at top of dashboard |
 | 2026-07-13 | Figma redesign; heat-log delete; checklist; glaze 5/6; notifications; docs refresh; **CSV/JSON import on History** |
-| 2026-10-29 | Clamp dial 1–6; Bisque Candling in Log a reading; reminders own section; drop separate Finish firing panel |
+| 2026-10-29 | Clamp dial 1–6; Bisque Candling in Log a reading; reminders own section; drop Finish panel; bisque cones down-only |

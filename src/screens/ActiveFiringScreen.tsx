@@ -33,9 +33,7 @@ type ConeToggleDef = {
 function coneTogglesFor(type: FiringType): ConeToggleDef[] {
   if (type === 'bisque') {
     return [
-      { key: '07-started', label: 'Cone 07 started' },
       { key: '07-down', label: 'Cone 07 down' },
-      { key: '06-started', label: 'Cone 06 started' },
       { key: '06-down', label: 'Cone 06 down', hint: 'Target — shut off when bent' },
     ]
   }
