@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { BisqueSection } from '../components/BisqueSection'
 import { BrandMark } from '../components/BrandMark'
 import { Button } from '../components/Button'
 import { ConfirmDialog } from '../components/ConfirmDialog'
@@ -283,10 +282,6 @@ export function ActiveFiringScreen({
               onChange={(e) => setKWh(e.target.value)}
             />
           </label>
-
-          {firing.type === 'bisque' && (
-            <BisqueSection firing={firing} onChange={onChange} lastTempC={lastTemp} />
-          )}
 
           <div className="cone-toggles">
             <h3>Cone events</h3>
