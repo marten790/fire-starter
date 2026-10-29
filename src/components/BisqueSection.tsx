@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from './Button'
-import { ReminderControls } from './ReminderControls'
 import { Toggle } from './Toggle'
 import {
   CANDLING_DOOR_MINUTES,
@@ -15,26 +14,17 @@ import {
   buzzDevice,
   playReminderChime,
   showBrowserNotification,
-  type ReminderSettings,
 } from '../lib/reminders'
 import type { CandlingState, FiringSession, PhaseReading } from '../types/firing'
 import './BisqueSection.css'
 
 type Props = {
   firing: FiringSession
-  reminders: ReminderSettings
-  onRemindersChange: (next: ReminderSettings) => void
   onChange: (firing: FiringSession) => void
   lastTempC?: number
 }
 
-export function BisqueSection({
-  firing,
-  reminders,
-  onRemindersChange,
-  onChange,
-  lastTempC,
-}: Props) {
+export function BisqueSection({ firing, onChange, lastTempC }: Props) {
   const candling = firing.candling ?? {}
   const [now, setNow] = useState(Date.now())
   const [doorPromptOpen, setDoorPromptOpen] = useState(false)
@@ -122,7 +112,7 @@ export function BisqueSection({
   }
 
   return (
-    <section className="bisque-section" aria-label="Bisque candling and reminders">
+    <div className="bisque-section" aria-label="Bisque candling">
       {(doorPromptOpen || peepholePromptOpen) && (
         <div className="bisque-section__alerts" role="status">
           {doorPromptOpen && (
@@ -237,13 +227,6 @@ export function BisqueSection({
           onChange={(e) => markPeepholeClosed(e.target.checked)}
         />
       </div>
-
-      <ReminderControls
-        settings={reminders}
-        onChange={onRemindersChange}
-        title="Bisque check reminders"
-        hint="Sends a notification with sound when it’s time to check. Allow notifications, keep Firestarter on the Home Screen, and leave the screen on for the most reliable alerts."
-      />
-    </section>
+    </div>
   )
 }

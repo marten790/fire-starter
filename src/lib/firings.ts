@@ -31,6 +31,13 @@ export function nowClock() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
+/** Dial is 1–6, including half steps (e.g. 3.5). */
+export function clampDial(value: number): number {
+  if (!Number.isFinite(value)) return 1
+  const stepped = Math.round(value * 2) / 2
+  return Math.min(6, Math.max(1, stepped))
+}
+
 function loadDeletedPaperIds(): Set<string> {
   try {
     const raw = localStorage.getItem(DELETED_PAPER_KEY)

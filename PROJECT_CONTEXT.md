@@ -27,7 +27,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 | MVP build | **Strong progress** | See “What’s built” |
 | iPad testing | **Active** | Safari → Add to Home Screen |
 
-**Last updated:** 2026-07-13
+**Last updated:** 2026-10-29
 
 ## What’s built (current product)
 
@@ -51,13 +51,13 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 ### Active firing
 - Session card: type, date name, large timer, status pill, cone target, started time, last reading
 - Temperature graph (°C vs elapsed time)
-- Log reading: dial 1–6 (half steps), °C, kWh, notes
+- Log reading: dial **1–6 only** (half steps), °C, kWh; notes sit at the bottom of the section, then Log reading / Save & leave
 - **Cone events (toggles):**
   - Bisque: 07 / 06 started & down
   - Glaze: **5 and 6 only** (started & down); cone 6 hints for soak / target
-- **Bisque · Candling:** countdown to close door (1h), peephole close ~100°C, toggles, alerts + chime
-- Check reminders: 15 / 30 / 60 min (bisque defaults to 15 on start)
-- End firing → cooling; delete firing
+- **Bisque · Candling:** inside **Log a reading**; countdown to close door (1h), peephole close ~100°C, toggles, alerts + chime. **Log reading / Save & leave** at the bottom of that section
+- Check reminders: **own section** — 15 / 30 / 60 min (bisque defaults to 15 on start; title “Bisque check reminders”)
+- **Finish firing:** **own section** (after reminders) — End firing → cooling; delete firing
 - Heating log: **single-line** rows + small **Delete** (with confirm); graph updates
 
 ### Reminders / notifications
@@ -232,3 +232,4 @@ Heating log · peak/soak · cooling 1/2/4/8h · results (bottom/mid/top cones, o
 | 2026-07-10 | Docs, discovery, tokens, Vite PWA, paper import, Vercel, end-of-fire, cones |
 | 2026-07-11 | Reminders; CSV/JSON export; export at top of dashboard |
 | 2026-07-13 | Figma redesign; heat-log delete; checklist; glaze 5/6; notifications; docs refresh; **CSV/JSON import on History** |
+| 2026-10-29 | Clamp dial input to **1–6** (half steps still allowed); move Bisque Candling into Log a reading; reminders + Finish firing as own sections |

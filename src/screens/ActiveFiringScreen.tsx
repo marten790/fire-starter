@@ -8,7 +8,7 @@ import { FiringDetails } from '../components/FiringDetails'
 import { ReminderControls } from '../components/ReminderControls'
 import { TempChart } from '../components/TempChart'
 import { Toggle } from '../components/Toggle'
-import { formatElapsed, DEFAULT_COOLING_LOG, nowClock } from '../lib/firings'
+import { clampDial, formatElapsed, DEFAULT_COOLING_LOG, nowClock } from '../lib/firings'
 import type { ReminderSettings } from '../lib/reminders'
 import type { ConeEvent, FiringSession, FiringType, HeatingLogEntry } from '../types/firing'
 import './ActiveFiringScreen.css'
@@ -66,7 +66,7 @@ export function ActiveFiringScreen({
   const [elapsedSec, setElapsedSec] = useState(() =>
     Math.floor(((firing.endedAt ?? Date.now()) - firing.startedAt) / 1000),
   )
-  const [dial, setDial] = useState(firing.dial)
+  const [dial, setDial] = useState(() => clampDial(firing.dial))
   const [tempC, setTempC] = useState('')
   const [kWh, setKWh] = useState('')
   const [notes, setNotes] = useState('')
@@ -107,19 +107,20 @@ export function ActiveFiringScreen({
 
   function logReading() {
     if (!canLog) return
+    const savedDial = clampDial(dial)
     const entry: HeatingLogEntry = {
       id: crypto.randomUUID(),
       elapsedMinutes: Math.floor(elapsedSec / 60),
       elapsedSeconds: elapsedSec,
       clockTime: nowClock(),
-      dial,
+      dial: savedDial,
       tempC: Number(tempC),
       kWh: kWh === '' ? undefined : Number(kWh),
       notes: notes.trim() || undefined,
     }
     onChange({
       ...firing,
-      dial,
+      dial: savedDial,
       entries: [...firing.entries, entry],
     })
     onLoggedReading()
@@ -128,8 +129,9 @@ export function ActiveFiringScreen({
   }
 
   function updateDial(next: number) {
-    setDial(next)
-    onChange({ ...firing, dial: next })
+    const clamped = clampDial(next)
+    setDial(clamped)
+    onChange({ ...firing, dial: clamped })
   }
 
   function isConeOn(key: string) {
@@ -253,8 +255,14 @@ export function ActiveFiringScreen({
               min={1}
               max={6}
               step={0.5}
+              inputMode="decimal"
               value={dial}
-              onChange={(e) => updateDial(Number(e.target.value))}
+              onChange={(e) => {
+                const raw = Number(e.target.value)
+                if (!Number.isFinite(raw)) return
+                updateDial(raw)
+              }}
+              onBlur={() => updateDial(dial)}
             />
           </label>
           <label className="field">
@@ -275,23 +283,10 @@ export function ActiveFiringScreen({
               onChange={(e) => setKWh(e.target.value)}
             />
           </label>
-          <label className="field">
-            <span>Notes</span>
-            <input
-              placeholder="Door ajar, cone started…"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-          </label>
 
-          <div className="active-actions">
-            <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
-              Log reading
-            </Button>
-            <Button className="fs-btn--grow" variant="outline" onClick={onBackToDashboard}>
-              Save & leave
-            </Button>
-          </div>
+          {firing.type === 'bisque' && (
+            <BisqueSection firing={firing} onChange={onChange} lastTempC={lastTemp} />
+          )}
 
           <div className="cone-toggles">
             <h3>Cone events</h3>
@@ -319,32 +314,57 @@ export function ActiveFiringScreen({
             </div>
           </div>
 
-          {firing.type === 'bisque' ? (
-            <BisqueSection
-              firing={firing}
-              reminders={reminders}
-              onRemindersChange={onRemindersChange}
-              onChange={onChange}
-              lastTempC={lastTemp}
+          <label className="field">
+            <span>Notes</span>
+            <input
+              placeholder="Door ajar, cone started…"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
-          ) : (
-            <ReminderControls settings={reminders} onChange={onRemindersChange} />
-          )}
+          </label>
 
-          <div className="finish-block">
-            <h3>Finish firing</h3>
-            <div className="active-actions">
-              <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
-                End firing → cooling
-              </Button>
-              <Button
-                className="fs-btn--grow"
-                variant="danger"
-                onClick={() => setConfirmDeleteOpen(true)}
-              >
-                Delete firing
-              </Button>
-            </div>
+          <div className="active-actions">
+            <Button className="fs-btn--grow" variant="aux" disabled={!canLog} onClick={logReading}>
+              Log reading
+            </Button>
+            <Button className="fs-btn--grow" variant="outline" onClick={onBackToDashboard}>
+              Save & leave
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {isRunning && (
+        <section className="panel-card" aria-label="Check reminders">
+          <ReminderControls
+            settings={reminders}
+            onChange={onRemindersChange}
+            title={
+              firing.type === 'bisque' ? 'Bisque check reminders' : 'Check reminders'
+            }
+            hint={
+              firing.type === 'bisque'
+                ? 'Sends a notification with sound when it’s time to check. Allow notifications, keep Firestarter on the Home Screen, and leave the screen on for the most reliable alerts.'
+                : undefined
+            }
+          />
+        </section>
+      )}
+
+      {isRunning && (
+        <section className="panel-card finish-section" aria-label="Finish firing">
+          <h2>Finish firing</h2>
+          <div className="active-actions">
+            <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
+              End firing → cooling
+            </Button>
+            <Button
+              className="fs-btn--grow"
+              variant="danger"
+              onClick={() => setConfirmDeleteOpen(true)}
+            >
+              Delete firing
+            </Button>
           </div>
         </section>
       )}

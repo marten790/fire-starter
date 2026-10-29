@@ -1,5 +1,5 @@
 import { Button } from './Button'
-import { nowClock } from '../lib/firings'
+import { clampDial, nowClock } from '../lib/firings'
 import type {
   CoolingLogEntry,
   FiringResults,
@@ -48,7 +48,9 @@ export function EndOfFireForm({ firing, onChange }: Props) {
     const next: PhaseReading = { ...current }
     if (field === 'clockTime' || field === 'notes' || field === 'witnessCone') {
       next[field] = value
-    } else if (field === 'dial' || field === 'tempC' || field === 'kWh') {
+    } else if (field === 'dial') {
+      next.dial = value === '' ? undefined : clampDial(Number(value))
+    } else if (field === 'tempC' || field === 'kWh') {
       next[field] = value === '' ? undefined : Number(value)
     }
     patch({ [key]: next })
