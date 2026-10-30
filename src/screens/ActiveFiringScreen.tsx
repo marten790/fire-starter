@@ -329,21 +329,6 @@ export function ActiveFiringScreen({
               Save & leave
             </Button>
           </div>
-
-          <div className="finish-block">
-            <div className="active-actions">
-              <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
-                End firing → cooling
-              </Button>
-              <Button
-                className="fs-btn--grow"
-                variant="danger"
-                onClick={() => setConfirmDeleteOpen(true)}
-              >
-                Delete firing
-              </Button>
-            </div>
-          </div>
         </section>
       )}
 
@@ -420,6 +405,23 @@ export function ActiveFiringScreen({
       )}
 
       {isRunning && <FiringDetails firing={firing} />}
+
+      {isRunning && (
+        <section className="panel-card finish-section" aria-label="End firing">
+          <div className="active-actions">
+            <Button className="fs-btn--grow" variant="outline" onClick={onEnd}>
+              End firing → cooling
+            </Button>
+            <Button
+              className="fs-btn--grow"
+              variant="danger"
+              onClick={() => setConfirmDeleteOpen(true)}
+            >
+              Delete firing
+            </Button>
+          </div>
+        </section>
+      )}
     </main>
   )
 }

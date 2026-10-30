@@ -260,6 +260,10 @@
   border-top: 1px solid var(--border-default);
 }
 
+.finish-section {
+  margin-top: auto;
+}
+
 .finish-note {
   margin: 0;
   font-size: var(--text-caption-size);
