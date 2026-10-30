@@ -241,7 +241,7 @@ export function ActiveFiringScreen({
         </div>
       </section>
 
-      {firing.entries.length > 0 && <TempChart entries={firing.entries} />}
+      <TempChart entries={firing.entries} firingType={firing.type} />
 
       {isRunning && (
         <section className="panel-card" aria-label="Log reading">

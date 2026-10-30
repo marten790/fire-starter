@@ -1,9 +1,16 @@
 import { useMemo } from 'react'
-import type { HeatingLogEntry } from '../types/firing'
+import { referenceCurveFor } from '../data/referenceCurves'
+import type { FiringType, HeatingLogEntry } from '../types/firing'
 import './TempChart.css'
 
 type Props = {
   entries: HeatingLogEntry[]
+  firingType: FiringType
+}
+
+type ChartPoint = {
+  elapsedSeconds: number
+  tempC: number
 }
 
 function formatAxisMinutes(minutes: number) {
@@ -13,41 +20,50 @@ function formatAxisMinutes(minutes: number) {
   return m === 0 ? `${h}h` : `${h}h${m}m`
 }
 
-export function TempChart({ entries }: Props) {
+function lineFromCoords(coords: { cx: number; cy: number }[]) {
+  if (coords.length < 2) return ''
+  return coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.cx} ${c.cy}`).join(' ')
+}
+
+export function TempChart({ entries, firingType }: Props) {
+  const reference = referenceCurveFor(firingType)
+
   const chart = useMemo(() => {
+    const current: ChartPoint[] = entries.map((entry) => ({
+      elapsedSeconds: entry.elapsedSeconds,
+      tempC: entry.tempC,
+    }))
     const width = 640
-    const height = 220
+    const height = 240
     const pad = { top: 20, right: 16, bottom: 36, left: 48 }
     const innerW = width - pad.left - pad.right
     const innerH = height - pad.top - pad.bottom
 
-    const points = entries.map((e) => ({
-      xMin: e.elapsedSeconds / 60,
-      y: e.tempC,
-    }))
-
-    const maxX = Math.max(1, ...points.map((p) => p.xMin))
+    const allPoints = [...reference.points, ...current]
+    const maxX = Math.max(
+      60,
+      ...allPoints.map((point) => point.elapsedSeconds / 60),
+    )
     const minY = 0
-    const maxY = Math.max(100, ...points.map((p) => p.y)) * 1.08
+    const maxY = Math.max(100, ...allPoints.map((point) => point.tempC)) * 1.08
 
     const toX = (xMin: number) => pad.left + (xMin / maxX) * innerW
     const toY = (temp: number) =>
       pad.top + innerH - ((temp - minY) / (maxY - minY)) * innerH
 
-    const coords = points.map((p) => ({
-      cx: toX(p.xMin),
-      cy: toY(p.y),
-      label: `${Math.round(p.y)}°C`,
-    }))
+    const mapSeries = (points: ChartPoint[]) =>
+      points.map((point) => ({
+        cx: toX(point.elapsedSeconds / 60),
+        cy: toY(point.tempC),
+        label: `${Math.round(point.tempC)}°C`,
+      }))
 
-    const line =
-      coords.length > 1
-        ? coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.cx} ${c.cy}`).join(' ')
-        : ''
-
-    const area =
-      coords.length > 1
-        ? `${line} L ${coords[coords.length - 1].cx} ${pad.top + innerH} L ${coords[0].cx} ${pad.top + innerH} Z`
+    const refCoords = mapSeries(reference.points)
+    const nowCoords = mapSeries(current)
+    const nowLine = lineFromCoords(nowCoords)
+    const nowArea =
+      nowCoords.length > 1
+        ? `${nowLine} L ${nowCoords[nowCoords.length - 1].cx} ${pad.top + innerH} L ${nowCoords[0].cx} ${pad.top + innerH} Z`
         : ''
 
     const yTicks = [0, 0.25, 0.5, 0.75, 1].map((t) => {
@@ -55,27 +71,55 @@ export function TempChart({ entries }: Props) {
       return { value, y: toY(value) }
     })
 
-    const xTicks = [0, 0.5, 1].map((t) => {
-      const value = maxX * t
-      return { value, x: toX(value) }
-    })
+    const hourMax = Math.max(1, Math.ceil(maxX / 60))
+    const step = hourMax > 8 ? 2 : 1
+    const xTicks: { value: number; x: number }[] = []
+    for (let hour = 0; hour <= hourMax; hour += step) {
+      const value = hour * 60
+      if (value <= maxX + 1) xTicks.push({ value, x: toX(value) })
+    }
 
-    return { width, height, pad, coords, line, area, yTicks, xTicks, innerH }
-  }, [entries])
-
-  if (entries.length === 0) return null
+    return {
+      width,
+      height,
+      pad,
+      refCoords,
+      refLine: lineFromCoords(refCoords),
+      nowCoords,
+      nowLine,
+      nowArea,
+      yTicks,
+      xTicks,
+      nowCount: current.length,
+    }
+  }, [entries, reference.points])
 
   return (
     <section className="temp-chart" aria-label="Temperature graph">
       <div className="temp-chart__header">
-        <h2>Temperature</h2>
-        <p>°C over elapsed time</p>
+        <div>
+          <h2>Temperature</h2>
+          <p>
+            This firing vs {reference.label}
+            {chart.nowCount === 0 ? ' — log readings to overlay' : ''}
+          </p>
+        </div>
+        <ul className="temp-chart__legend">
+          <li>
+            <span className="temp-chart__swatch temp-chart__swatch--ref" />
+            {reference.label}
+          </li>
+          <li>
+            <span className="temp-chart__swatch temp-chart__swatch--now" />
+            This firing
+          </li>
+        </ul>
       </div>
       <svg
         className="temp-chart__svg"
         viewBox={`0 0 ${chart.width} ${chart.height}`}
         role="img"
-        aria-label={`Temperature chart with ${entries.length} reading${entries.length === 1 ? '' : 's'}`}
+        aria-label={`Temperature chart comparing this firing with ${reference.label}`}
       >
         {chart.yTicks.map((tick) => (
           <g key={`y-${tick.value}`}>
@@ -104,14 +148,25 @@ export function TempChart({ entries }: Props) {
           </text>
         ))}
 
-        {chart.area && <path d={chart.area} className="temp-chart__area" />}
-        {chart.line && <path d={chart.line} className="temp-chart__line" />}
+        {chart.refLine && <path d={chart.refLine} className="temp-chart__line temp-chart__line--ref" />}
+        {chart.refCoords.map((coord, i) => (
+          <circle
+            key={`ref-${i}`}
+            cx={coord.cx}
+            cy={coord.cy}
+            r={3.5}
+            className="temp-chart__dot temp-chart__dot--ref"
+          />
+        ))}
 
-        {chart.coords.map((c, i) => (
-          <g key={entries[i].id}>
-            <circle cx={c.cx} cy={c.cy} r={6} className="temp-chart__dot" />
-            <text x={c.cx} y={c.cy - 12} className="temp-chart__dot-label" textAnchor="middle">
-              {c.label}
+        {chart.nowArea && <path d={chart.nowArea} className="temp-chart__area" />}
+        {chart.nowLine && <path d={chart.nowLine} className="temp-chart__line" />}
+
+        {chart.nowCoords.map((coord, i) => (
+          <g key={entries[i]?.id ?? `now-${i}`}>
+            <circle cx={coord.cx} cy={coord.cy} r={6} className="temp-chart__dot" />
+            <text x={coord.cx} y={coord.cy - 12} className="temp-chart__dot-label" textAnchor="middle">
+              {coord.label}
             </text>
           </g>
         ))}

@@ -8,9 +8,49 @@
 
 .temp-chart__header {
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.temp-chart__header > div {
+  display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: var(--space-3);
+}
+
+.temp-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--text-mid);
+}
+
+.temp-chart__legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.temp-chart__swatch {
+  width: 18px;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--color-aux);
+}
+
+.temp-chart__swatch--ref {
+  background: var(--color-tertiary);
+  box-shadow: 6px 0 0 var(--color-tertiary), -6px 0 0 var(--color-tertiary);
+  height: 2px;
+  opacity: 0.9;
 }
 
 .temp-chart__header p {
@@ -49,10 +89,22 @@
   stroke-linejoin: round;
 }
 
+.temp-chart__line--ref {
+  stroke: var(--color-tertiary-600);
+  stroke-width: 2.5;
+  stroke-dasharray: 7 6;
+  opacity: 0.9;
+}
+
 .temp-chart__dot {
   fill: var(--color-aux);
   stroke: var(--surface-background);
   stroke-width: 2;
+}
+
+.temp-chart__dot--ref {
+  fill: var(--color-tertiary);
+  stroke-width: 1.5;
 }
 
 .temp-chart__dot-label {

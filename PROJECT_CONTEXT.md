@@ -50,7 +50,7 @@ Tracking today: paper log sheets + Orton cones + external thermocouple meter (°
 
 ### Active firing
 - Session card: type, date name, large timer, status pill, cone target, started time, last reading
-- Temperature graph (°C vs elapsed time)
+- Temperature graph (°C vs elapsed time), overlaid on a paper-log reference curve (**19 Nov glaze** or **30 Mar bisque**) so you can compare as you fire
 - Log reading: dial **1–6 only** (half steps), °C, kWh; notes sit at the bottom of the section, then Log reading / Save & leave
 - **Cone events (toggles):**
   - Bisque: 07 / 06 **down** only
@@ -180,6 +180,7 @@ fire-starter/
 │   │   ├── exportData.ts       ← CSV + JSON export
 │   │   └── importData.ts       ← CSV + JSON import into History
 │   ├── data/paperFirings.ts    ← imported paper logs
+│   ├── data/referenceCurves.ts ← 19 Nov glaze / 30 Mar bisque comparison graphs
 │   ├── screens/
 │   │   ├── DashboardScreen.tsx
 │   │   ├── HistoryScreen.tsx
@@ -233,4 +234,4 @@ Heating log · peak/soak · cooling 1/2/4/8h · results (bottom/mid/top cones, o
 | 2026-07-11 | Reminders; CSV/JSON export; export at top of dashboard |
 | 2026-07-13 | Figma redesign; heat-log delete; checklist; glaze 5/6; notifications; docs refresh; **CSV/JSON import on History** |
 | 2026-10-29 | Clamp dial 1–6; Bisque Candling in Log a reading; reminders own section; drop Finish panel; bisque cones down-only |
-| 2026-10-30 | Move End firing / Delete firing to the bottom of the active screen |
+| 2026-10-30 | Move End firing / Delete firing to the bottom of the active screen; overlay glaze/bisque paper curves on the live graph |
